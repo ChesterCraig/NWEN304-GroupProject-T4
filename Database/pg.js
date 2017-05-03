@@ -7,7 +7,6 @@ if (process.env.DATABASE_URL) {
     var connectionString = process.env.DATABASE_URL
 } else {
     //Connect to database
-    var config = JSON.parse(fs.readFileSync('./db/config.txt', 'utf8'));
     var connectionString = `postgres://${config.username}:${config.password}@${config.location}`;
 }
 

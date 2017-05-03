@@ -1,7 +1,7 @@
 //Import Modules
 const express = require('express');
 const bodyParser = require("body-parser");
-const {client} = require("./db/pg");
+const {client} = require("./Database/pg");
 
 //create express app
 var app = express();
