@@ -1,0 +1,17 @@
+{
+  "name": "nwen304-group-project-t4",
+  "version": "1.0.0",
+  "description": "NWEN304 Group project for team 4",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "author": "Chester Craig, Patrick Ryan, Reuben Lovell-Smith",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "pg": "^6.1.5"
+  }
+}
