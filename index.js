@@ -1,7 +1,7 @@
 //Import Modules
 const express = require('express');
 const bodyParser = require("body-parser");
-const {client} = require("./Database/pg");
+const {client} = require("./database/pg");
 
 //create express app
 var app = express();
@@ -13,17 +13,18 @@ var port = process.env.PORT || 8080;
 app.use(bodyParser.json());
 
 //Setup middleware to serve up anything in public folder. Root will point to our index.html
-app.use(express.static(__dirname + "/Public"));
+app.use(express.static(__dirname + "/public"));
 
 //OAUTH and OPEN ID prep here
 
 
-//========RESTful====API=======   this is just a skeleton 
+//========RESTful====API=======
 //GET ALL THINGS
 app.get('/things', (request,response) => {
-    console.log("Get all todos");
-    var query = client.query("SELECT * FROM ??"); 
+    console.log("Get all items");
+    var query = client.query("SELECT * FROM ITEM"); 
     var results = [];
+
     // Stream resultscl back one row at a time into array
     query.on('row', function(row) {
         results.push(row); 
@@ -36,10 +37,10 @@ app.get('/things', (request,response) => {
 });
 
 //GET SPECIFIC THING
-app.get('/things/:id', (request,response) => {
-    console.log("Get specific todo: " + request.params.id);
+app.get('/items/:id', (request,response) => {
+    console.log("Get specific item: " + request.params.id);
     if ((request.params.id) && (request.params.id > 0)) {
-        var query = client.query(`SELECT * FROM things WHERE id = ${request.params.id}`);
+        var query = client.query(`SELECT * FROM item WHERE id = ${request.params.id}`);
         var results = [];
     
         // Stream results back one row at a time 
@@ -52,16 +53,16 @@ app.get('/things/:id', (request,response) => {
             response.json(results); 
         });
     } else {
-        return response.status(400).send("ID is invalid");
+        return response.status(400).send("Item ID is invalid");
     }
 });
 
-//CREATE A NEW THING
+//CREATE A NEW ITEM
 app.post('/todos', function(request, response){
     //body parser used 
-    console.log("Create thing with data from http json body", request.body);
+    console.log("Create item with data from http json body", request.body);
       if (request.body.item) {
-        var query = client.query(`INSERT INTO things (???,???) VALUES ('${request.body.item}',False) RETURNING id, ??, ??`);
+        var query = client.query(`INSERT INTO item (name, description, price) VALUES ('${request.body.item}') RETURNING id, name, description, price`);
         var results = [];
     
         // Stream results back one row at a time 
@@ -79,51 +80,52 @@ app.post('/todos', function(request, response){
 });
 
 
-//UPDATED A THING
-app.put('/todo/:id', function(request, response){
-	console.log("Update todo with data: ", request.body);
-    if ((request.params.id) && ((request.body.completed === true || request.body.completed === false) || (request.body.item))) {
-        var qryString = `UPDATE thing SET col = ????`;
-        qryString = qryString + ` WHERE id = ${request.params.id}`;
+//NOT YET IMPLEMENTED
+// // Update an item
+// app.put('/item/:id', function(request, response){
+// 	console.log("Update todo with data: ", request.body);
+//     if ((request.params.id) && ((request.body.completed === true || request.body.completed === false) || (request.body.item))) {
+//         var qryString = `UPDATE item SET col = ????`;
+//         qryString = qryString + ` WHERE id = ${request.params.id}`;
         
-        //var query = client.query(qryString, function(error, result){
-        client.query(qryString, function(error, result){
-            if (error){
-                return response.status(500).send(`Failed to update thing: ${request.params.id} ${error}`);
-            } else {
+//         //var query = client.query(qryString, function(error, result){
+//         client.query(qryString, function(error, result){
+//             if (error){
+//                 return response.status(500).send(`Failed to update thing: ${request.params.id} ${error}`);
+//             } else {
                 
-                //SEND UPDATED JSON thing BACK
-                var query = client.query(`SELECT id, ???, ??? FROM things WHERE id = ${request.params.id}`);
-                var results = [];
+//                 //SEND UPDATED JSON thing BACK
+//                 var query = client.query(`SELECT id, ???, ??? FROM things WHERE id = ${request.params.id}`);
+//                 var results = [];
     
-                // Stream results back one row at a time 
-                query.on('row', function(row) {
-                    results.push(row); 
-                });
+//                 // Stream results back one row at a time 
+//                 query.on('row', function(row) {
+//                     results.push(row); 
+//                 });
     
-                // After all data is returned, close connection and return results 
-                query.on('end', function() {
-                    response.json(results); 
-                });
-            }
-        });
-    } else {
-        return response.status(400).send("THING ID is invalid");
-    }
-});
+//                 // After all data is returned, close connection and return results 
+//                 query.on('end', function() {
+//                     response.json(results); 
+//                 });
+//             }
+//         });
+//     } else {
+//         return response.status(400).send("THING ID is invalid");
+//     }
+// });
 
 
-//DELETE A SINGLE THING
-app.delete('/todo/:id', function(request, response){
+// Delete a single item
+app.delete('/item/:id', function(request, response){
     console.log("Delete: " + request.params.id);
 	if ((request.params.id) && (request.params.id > 0)) {
-        var query = client.query(`DELETE FROM thing WHERE id = ${request.params.id}`, function(error, result) {
+        var query = client.query(`DELETE FROM item WHERE id = ${request.params.id}`, function(error, result) {
             if (error){
-                return response.status(500).send("Failed to delete todo: " + error);
+                return response.status(500).send("Failed to delete item: " + error);
             }
         });       
     } else {
-        return response.status(400).send("THING ID is invalid");
+        return response.status(400).send("Item ID is invalid");
     }
 });
 

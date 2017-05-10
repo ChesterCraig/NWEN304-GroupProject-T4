@@ -1,13 +1,13 @@
 var pg = require('pg');
-var config = require('./../Config/dbConfig');
+var config = require('./../config/dbConfig');
 
 //Get connection information for database
 if (process.env.DATABASE_URL) {
     //Heroku hosted database
-    var connectionString = process.env.DATABASE_URL
+    var connectionString = process.env.DATABASE_URL; //Heroku based db credentials
 } else {
-    //Connect to database
-    var connectionString = `postgres://${config.username}:${config.password}@${config.location}`;
+        //Connect to database
+        var connectionString = `postgres://${config.username}:${config.password}@${config.location}`;
 }
 
 console.log(`Database connection: ${connectionString}`);
@@ -22,22 +22,23 @@ client.connect((error) => {
 });
 
 client.initSchema = function (callback) {
-    // //Setup table in database if not setup
-    // var qry = "CREATE TABLE IF NOT EXISTS things ( ";
-    // qry = qry + "id serial primary key, ";
-    // qry = qry + "item character varying(255) ";
-    // qry = qry + ")";
+    //Setup table in database if not setup
+    var qry = "CREATE TABLE IF NOT EXISTS ITEM (";
+    qry = qry + "id serial primary key,";
+    qry = qry + "name CHAR(255),";
+    qry = qry + "description CHAR(255),";
+    qry = qry + "price REAL";
+    qry = qry + ");";
 
-    // var query = client.query(qry, function(error, result){
-    //     if (error){
-    //         console.log('Failed to run init schema query. Server not started.');
-    //         throw error;
-    //     } else {
-    //         callback();   
-    //     }
-    // });
-
-    callback();  
+    var query = client.query(qry, function(error, result){
+        if (error){
+            console.log('Failed to run init schema query. Server not started.');
+            throw error;
+        } else {
+            callback();   
+        }
+    });
+    //previously a callback() here.. removed
 }
 
 module.exports = {client};
