@@ -58,7 +58,7 @@ app.get('/items/:id', (request,response) => {
 });
 
 //CREATE A NEW ITEM
-app.post('/todos', function(request, response){
+app.post('/items', function(request, response){
     //body parser used 
     console.log("Create item with data from http json body", request.body);
       if (request.body.item) {
