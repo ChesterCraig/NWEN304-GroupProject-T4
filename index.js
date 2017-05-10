@@ -20,7 +20,7 @@ app.use(express.static(__dirname + "/Public"));
 
 //========RESTful====API=======
 //GET ALL THINGS
-app.get('/things', (request,response) => {
+app.get('/items', (request,response) => {
     console.log("Get all items");
     var query = client.query("SELECT * FROM ITEM"); 
     var results = [];
