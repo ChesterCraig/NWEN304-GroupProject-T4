@@ -1,7 +1,7 @@
 //Import Modules
 const express = require('express');
 const bodyParser = require("body-parser");
-const {client} = require("./database/pg");
+const {client} = require("./Database/pg");
 
 //create express app
 var app = express();
@@ -13,7 +13,7 @@ var port = process.env.PORT || 8080;
 app.use(bodyParser.json());
 
 //Setup middleware to serve up anything in public folder. Root will point to our index.html
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/Public"));
 
 //OAUTH and OPEN ID prep here
 

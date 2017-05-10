@@ -1,5 +1,5 @@
 var pg = require('pg');
-var config = require('./../config/dbConfig');
+var config = require('./../Config/dbConfig');
 
 //Get connection information for database
 if (process.env.DATABASE_URL) {
