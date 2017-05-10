@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index"
   },
+  "engines": {
+    "node": "6.9.2"
+  },
   "author": "Chester Craig, Patrick Ryan, Reuben Lovell-Smith",
   "license": "ISC",
   "dependencies": {

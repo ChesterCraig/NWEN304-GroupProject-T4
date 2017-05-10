@@ -4,10 +4,9 @@ var config = require('./../config/dbConfig');
 //Get connection information for database
 if (process.env.DATABASE_URL) {
     //Heroku hosted database
-    var connectionString = process.env.DATABASE_URL; //Heroku based db credentials
+    var connectionString = process.env.DATABASE_URL; // Heroku based db credentials
 } else {
-        //Connect to database
-        var connectionString = `postgres://${config.username}:${config.password}@${config.location}`;
+        var connectionString = `postgres://${config.username}:${config.password}@${config.location}`;  // db/dbConfig.js based credentials
 }
 
 console.log(`Database connection: ${connectionString}`);
