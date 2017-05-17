@@ -1,0 +1,32 @@
+extends layout
+block body
+	.navbar-wrapper
+		.container
+			+navbar("Project name","dropdown_menu")
+				+nav_item("/","active") Home
+				+nav_item("/test") TEST ITEM
+				+nav_item("index.html") Contact
+				+nav_item_dropdown("#")(label="Dropdown")
+					+nav_item("#") Action
+					+nav_item("#") Another Action
+					+nav_item("#") Something else here
+    
+	.container
+		.col-md-4
+			p.lead Shop Name
+				+list-group-links([
+					{text:"Link 1",url:"#"},
+					{text:"Link 2",url:"#"},
+					{text:"Link 3",url:"#"},],0)
+
+		.col-md-8
+			+carousel("myCarousel",[{image:"images/placeholder800x600.jpg",h1:"Example headline",p:"rules."},
+				{image:"images/placeholder800x600.jpg",h1:"Another example headline",p:"d elit."},
+				{image:"images/placeholder800x600.jpg",h1:"One more for good measure.",p:"Celit."}])
+
+		footer
+			p.pull-right
+				a(href='#') Back to top
+
+
+

@@ -1,0 +1,40 @@
+extends layout
+block body
+	.navbar-wrapper
+		.container
+			+navbar("Project name","dropdown_menu")
+				+nav_item("/","active") Home
+				+nav_item("index.html") About
+				+nav_item("index.html") Contact
+				+nav_item_dropdown("#")(label="Dropdown")
+					+nav_item("#") Action
+					+nav_item("#") Another Action
+					+nav_item("#") Something else here
+    
+	.container
+		.col-md-3
+			p.lead Shop Name
+				+list-group-links([
+					{text:"Link 1",url:"#"},
+					{text:"Link 2",url:"#"},
+					{text:"Link 3",url:"#"},],0)
+		
+		.col-md-9
+			hr.featurette-divider
+			.row.featurette
+				.col-md-5
+					img.featurette-image.img-responsive.center-block(src='../images/placeholder.jpg')
+				.col-md-7
+					h2.featurette-heading
+						| #{item_name}. 
+					p.lead
+						| #{item_description}.
+			hr.featurette-divider
+		
+		footer
+			p.pull-right
+				a(href='#') Back to top
+
+
+
+

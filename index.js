@@ -3,6 +3,9 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const {client} = require("./Database/pg");
 
+var path = require('path');
+var routes = require('./routes/index');
+
 //create express app
 var app = express();
 
@@ -11,6 +14,12 @@ var port = process.env.PORT || 8080;
 
 //body parser middleware (gives us req.body elements parsed from clients http request)
 app.use(bodyParser.json());
+
+// setup pug/jade view engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.use('/', routes);
 
 //Setup middleware to serve up anything in public folder. Root will point to our index.html
 app.use(express.static(__dirname + "/Public"));
