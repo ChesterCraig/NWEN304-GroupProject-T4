@@ -2,6 +2,19 @@
 const express = require('express');
 const bodyParser = require("body-parser");
 const {client} = require("./Database/pg");
+var passport = require('passport')
+var FacebookStrategy = require('passport-facebook').Strategy;
+
+// Get OAuth config from heroku Config variables if present else config file.
+if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
+    var FacebookStrategyConfig = {
+        clientID: process.env.FB_CLIENT_ID,
+        clientSecret: process.env.FB_CLIENT_SECRET,
+        callbackURL: "https://clothes-shop-nwen304.herokuapp.com/auth/facebook/callback"
+    };
+} else { 
+    var FacebookStrategyConfig = require('./Config/fbConfig.js'); 
+}
 
 //create express app
 var app = express();
@@ -15,10 +28,34 @@ app.use(bodyParser.json());
 //Setup middleware to serve up anything in public folder. Root will point to our index.html
 app.use(express.static(__dirname + "/Public"));
 
-//OAUTH and OPEN ID prep here
+//Setup Passport Facebook OAuth
+passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
+   // Here we do something with the new user.. likely add to our database
+   console.log("We have a new user:",user);
+
+   // Invoke callback
+   done(null,user);
+  }
+));
 
 
-//========RESTful====API=======
+// Redirect the user to Facebook for authentication.  When complete, Facebook will redirect the user to /auth/facebook/callback
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+// Facebook will redirect the user to this URL after approval.  
+//Finish the authentication process by attempting to obtain an access token.  
+//If access was granted, the user will be logged in.  Otherwise, authentication has failed.
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { successRedirect: '/',
+                                      failureRedirect: '/login' }));
+
+// Failed login page
+app.get('/get',(request,response) => {
+    response.send('You failed to login<br><a href="/">--Go Home--</a>');
+});
+
+
+//========RESTful====APIS=======
 //GET ALL THINGS
 app.get('/items', (request,response) => {
     console.log("Get all items");
