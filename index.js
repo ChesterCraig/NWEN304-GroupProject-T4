@@ -31,10 +31,10 @@ app.use(express.static(__dirname + "/Public"));
 //Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
-   console.log("We have a new user:",user);
+   console.log("We have a new user:",profile);
 
    // Invoke callback
-   done(null,user);
+   done(null,profile);
   }
 ));
 
