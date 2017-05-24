@@ -18,9 +18,15 @@ if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
 }
 
 
+var path = require('path');
+var routes = require('./routes/index');
+
 //create express app
 var app = express();
 
+// setup pug/jade view engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 // Define all our middleware
 app.use(express.static(__dirname + "/Public")); // Serves anything up in public folder
@@ -73,6 +79,20 @@ passport.deserializeUser(function(id, done) {
         console.log("Deserialize = ",user);
         done(err,user); //response.json(results); 
     });
+});
+
+//home page.
+app.get('/', function(req, res, next) {
+  res.render('index', { title: 'Clothing Shop' });
+});
+
+// example item should be retrieved from db
+var item = { title: 'shop',
+            item_name:"generic item",
+            item_description:"about item" }
+//example item page
+app.get('/test', function(req, res, next) {
+  res.render('item_page',item);
 });
 
 
