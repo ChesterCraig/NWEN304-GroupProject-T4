@@ -1,5 +1,6 @@
 //Import Modules
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require("body-parser");
 const {client} = require("./Database/pg");
 var passport = require('passport')
@@ -16,27 +17,63 @@ if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
     var FacebookStrategyConfig = require('./Config/fbConfig.js'); 
 }
 
+
 //create express app
 var app = express();
 
-//Define port as either env variable or 8080 
-var port = process.env.PORT || 8080;
 
-//body parser middleware (gives us req.body elements parsed from clients http request)
-app.use(bodyParser.json());
+// Define all our middleware
+app.use(express.static(__dirname + "/Public")); // Serves anything up in public folder
+app.use(bodyParser.json()); // Gives us req.body elements parsed from clients http request
 
-//Setup middleware to serve up anything in public folder. Root will point to our index.html
-app.use(express.static(__dirname + "/Public"));
+// Authentication stuff
+app.use(session({secret: 'keyboard cat',
+                 resave: true,
+                 saveUninitialized: true }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
-   console.log("We have a new user:",profile);
+    console.log("We have a new user:",{id: user.id,displayName: user.displayName});
 
-   // Invoke callback
-   done(null,profile);
+
+    client.query(`INSERT INTO USER_ACCOUNT (id, display_name) VALUES (${user.id},'${user.displayName}') RETURNING id, display_name`,function () {
+        if (error) {
+            done(error,{id: user.id,displayName: user.displayName});
+        } else {
+            done(null,{id: user.id,displayName: user.displayName});
+        }
+    });
   }
 ));
+
+
+//Support for sessions
+passport.serializeUser(function(user, done) {
+    //all we need is our ID as this is key in our users table
+    done(null, user.id);
+});
+
+// From id in cookie, pull all user info to put on req.user
+passport.deserializeUser(function(id, done) {
+    // Get our user info from database to on req.user
+    var query = client.query(`SELECT id, display_name FROM USER_ACCOUNT WHERE id = ${id}`);
+    var user;
+
+    // Stream results back one row at a time 
+    query.on('row', function(row) {
+        user = row;
+    });
+
+    // After all data is returned, close connection and return results 
+    query.on('end', function() {
+        console.log("Deserialize = ",user);
+        done(err,user); //response.json(results); 
+    });
+});
 
 
 // Redirect the user to Facebook for authentication.  When complete, Facebook will redirect the user to /auth/facebook/callback
@@ -54,9 +91,15 @@ app.get('/get',(request,response) => {
     response.send('You failed to login<br><a href="/">--Go Home--</a>');
 });
 
+// Logout url
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
 
 //========RESTful====APIS=======
-//GET ALL THINGS
+// Get all items
 app.get('/items', (request,response) => {
     console.log("Get all items");
     var query = client.query("SELECT * FROM ITEM"); 
@@ -73,7 +116,7 @@ app.get('/items', (request,response) => {
     });
 });
 
-//GET SPECIFIC THING
+// Get specific item
 app.get('/items/:id', (request,response) => {
     console.log("Get specific item: " + request.params.id);
     if ((request.params.id) && (request.params.id > 0)) {
@@ -94,7 +137,7 @@ app.get('/items/:id', (request,response) => {
     }
 });
 
-//CREATE A NEW ITEM
+// Create a new item
 app.post('/items', function(request, response){
     //body parser used 
     console.log("Create item with data from http json body", request.body);
@@ -166,9 +209,10 @@ app.delete('/item/:id', function(request, response){
     }
 });
 
-//Initalise schema if required and start server
+// Initalise schema if required and start server
 client.initSchema(() => {        
     //Start web server
+    var port = process.env.PORT || 8080;
     app.listen(port, () => {
         console.log(`App listening on port ${port}`);
     });

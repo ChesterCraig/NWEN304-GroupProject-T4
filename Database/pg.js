@@ -22,7 +22,8 @@ client.connect((error) => {
 });
 
 client.initSchema = function (callback) {
-    //Setup table in database if not setup
+    
+    // Create Item and user table
     var qry = "CREATE TABLE IF NOT EXISTS ITEM (";
     qry = qry + "id serial primary key,";
     qry = qry + "name CHAR(255),";
@@ -30,15 +31,19 @@ client.initSchema = function (callback) {
     qry = qry + "price REAL";
     qry = qry + ");";
 
-    var query = client.query(qry, function(error, result){
-        if (error){
+    qry = qry + "CREATE TABLE IF NOT EXISTS USER_ACCOUNT (";
+    qry = qry + "id int primary key,";
+    qry = qry + "display_name CHAR(255)";
+    qry = qry + ");";
+
+    client.query(qry, function(error, result){
+        if (error) {
             console.log('Failed to run init schema query. Server not started.');
             throw error;
         } else {
-            callback();   
+            callback();  
         }
     });
-    //previously a callback() here.. removed
 }
 
 module.exports = {client};
