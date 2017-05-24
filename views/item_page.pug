@@ -3,8 +3,8 @@ block body
 	.navbar-wrapper
 		.container
 			+navbar("Project name","dropdown_menu")
-				+nav_item("/","active") Home
-				+nav_item("index.html") About
+				+nav_item("/") Home
+				+nav_item("/test","active") Item
 				+nav_item("index.html") Contact
 				+nav_item_dropdown("#")(label="Dropdown")
 					+nav_item("#") Action
