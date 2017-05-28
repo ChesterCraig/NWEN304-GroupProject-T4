@@ -138,7 +138,7 @@ app.get('/items', (request,response) => {
 
 // Create Item
 app.post('/items', (request,response) => {
-    query.createItem(client, request.body.item,() => {
+    query.createItem(client, request.body.item,(error,results) => {
         if (error) {
             return response.status(400).send(error);
         }

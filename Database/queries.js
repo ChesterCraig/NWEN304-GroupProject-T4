@@ -44,8 +44,8 @@ q.getItems = function(client,callback) {
 q.createItem = function(client, details, callback) {
     console.log("Create item");
 
-    queryString = `INSERT INTO item (name, description, price, image_path) VALUES ('${details.name}','${details.description}',${details.price},'${details.file_path}' `;
-    queryString = queryString + `RETURNING id, name, description, price, file_path`;
+    queryString = `INSERT INTO item (name, description, price, image_path) VALUES ('${details.name}','${details.description}',${details.price},'${details.image_path}') `;
+    queryString = queryString + `RETURNING id, name, description, price, image_path`;
     var query = client.query(queryString);
     var results = [];
 
@@ -59,7 +59,6 @@ q.createItem = function(client, details, callback) {
         callback(null,results);
     });
 };
-
 
 
 //========== USERS_ACCOUNTS ========================
