@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const {client} = require("./Database/pg");
 var passport = require('passport')
 var FacebookStrategy = require('passport-facebook').Strategy;
+const query = require("./Database/queries");
+
 
 // Get OAuth config from heroku Config variables if present else config file.
 if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
@@ -32,6 +34,8 @@ app.set('view engine', 'pug');
 app.use(express.static(__dirname + "/Public")); // Serves anything up in public folder
 app.use(bodyParser.json()); // Gives us req.body elements parsed from clients http request
 
+
+//======== PASSPORT AUTHORISATION STUFF ================================
 // Authentication stuff
 app.use(session({secret: 'keyboard cat',
                  resave: true,
@@ -44,9 +48,7 @@ app.use(passport.session());
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
     console.log("We have a new user:",{id: user.id,displayName: user.displayName});
-
-
-    client.query(`INSERT INTO USER_ACCOUNT (id, display_name) VALUES (${user.id},'${user.displayName}') RETURNING id, display_name`,function () {
+    query.createUser(client,details,(error,data) => {
         if (error) {
             done(error,{id: user.id,displayName: user.displayName});
         } else {
@@ -81,21 +83,6 @@ passport.deserializeUser(function(id, done) {
     });
 });
 
-//home page.
-app.get('/', function(req, res, next) {
-  res.render('index', { title: 'Clothing Shop' });
-});
-
-// example item should be retrieved from db
-var item = { title: 'shop',
-            item_name:"generic item",
-            item_description:"about item" }
-//example item page
-app.get('/test', function(req, res, next) {
-  res.render('item_page',item);
-});
-
-
 // Redirect the user to Facebook for authentication.  When complete, Facebook will redirect the user to /auth/facebook/callback
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
@@ -116,67 +103,65 @@ app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+//======== PASSPORT AUTHORISATION STUFF END ================================
 
 
-//========RESTful====APIS=======
+//======== RENDERED HTML PAGES ================================
+// Home page.
+app.get('/', function(req, res, next) {
+  res.render('index', { title: 'Clothing Shop' });
+});
+
+// example item should be retrieved from db
+var item = { title: 'shop',
+            item_name:"generic item",
+            item_description:"about item" }
+//example item page
+app.get('/test', function(req, res, next) {
+  res.render('item_page',item);
+});
+//======== RENDERED HTML PAGES END ================================
+
+
+//======== RESTFUL ENDPOINTS ================================
+
 // Get all items
 app.get('/items', (request,response) => {
-    console.log("Get all items");
-    var query = client.query("SELECT * FROM ITEM"); 
-    var results = [];
-
-    // Stream resultscl back one row at a time into array
-    query.on('row', function(row) {
-        results.push(row); 
-    });
-    
-    // After all data is returned, close connection and return results 
-    query.on('end', function() {
-        response.json(results); 
+    query.getItems(client,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results);
     });
 });
+
+
+// Create Item
+app.post('/items', (request,response) => {
+    query.createItem(client, request.body.item,() => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results);
+    });
+});
+
+
+
 
 // Get specific item
 app.get('/items/:id', (request,response) => {
     console.log("Get specific item: " + request.params.id);
-    if ((request.params.id) && (request.params.id > 0)) {
-        var query = client.query(`SELECT * FROM item WHERE id = ${request.params.id}`);
-        var results = [];
-    
-        // Stream results back one row at a time 
-        query.on('row', function(row) {
-            results.push(row); 
-        });
-    
-        // After all data is returned, close connection and return results 
-        query.on('end', function() {
-            response.json(results); 
-        });
-    } else {
-        return response.status(400).send("Item ID is invalid");
-    }
 });
 
 // Create a new item
 app.post('/items', function(request, response){
-    //body parser used 
-    console.log("Create item with data from http json body", request.body);
-      if (request.body.item) {
-        var query = client.query(`INSERT INTO item (name, description, price) VALUES ('${request.body.item}') RETURNING id, name, description, price`);
-        var results = [];
-    
-        // Stream results back one row at a time 
-        query.on('row', function(row) {
-            results.push(row); 
-        });
-    
-        // After all data is returned, close connection and return results 
-        query.on('end', function() {
-            response.json(results); 
-        });
-    } else {
-        return response.status(400).send("item value invalid");
-    }
+    query.createItem(client,request.body.item,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results); 
+    });
 });
 
 

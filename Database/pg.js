@@ -22,19 +22,24 @@ client.connect((error) => {
 });
 
 client.initSchema = function (callback) {
-    
-    // Create Item and user table
+    // Setup ITEM
     var qry = "CREATE TABLE IF NOT EXISTS ITEM (";
     qry = qry + "id serial primary key,";
     qry = qry + "name CHAR(255),";
     qry = qry + "description CHAR(255),";
-    qry = qry + "price REAL";
+    qry = qry + "price REAL,";
+    qry = qry + "image_path CHAR(255)";
     qry = qry + ");";
 
+    // Setup USER_ACCOUNTS
     qry = qry + "CREATE TABLE IF NOT EXISTS USER_ACCOUNT (";
     qry = qry + "id int primary key,";
     qry = qry + "display_name CHAR(255)";
     qry = qry + ");";
+
+    // Setup BASKET
+    //... pending
+
 
     client.query(qry, function(error, result){
         if (error) {
