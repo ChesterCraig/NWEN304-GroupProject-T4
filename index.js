@@ -165,6 +165,16 @@ app.post('/items', function(request, response){
     });
 });
 
+// Delete item
+app.delete('/items/:id', function(request, response){
+    query.deleteItem(client,request.params.id,(error) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.status(200).send(); 
+    });
+});
+
 
 //NOT YET IMPLEMENTED
 // // Update an item

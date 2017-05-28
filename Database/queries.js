@@ -71,8 +71,11 @@ q.createItem = function(client, details, callback) {
     });
 };
 
-
-
+q.deleteItem = function(client, id, callback) {
+    client.query(`DELETE FROM item WHERE id = ${id}`, function(error, result) {
+        callback(error);
+    });
+}
 
 //========== USERS_ACCOUNTS ========================
 
