@@ -135,7 +135,6 @@ app.get('/items', (request,response) => {
     });
 });
 
-
 // Create Item
 app.post('/items', (request,response) => {
     query.createItem(client, request.body.item,(error,results) => {
@@ -146,12 +145,14 @@ app.post('/items', (request,response) => {
     });
 });
 
-
-
-
 // Get specific item
 app.get('/items/:id', (request,response) => {
-    console.log("Get specific item: " + request.params.id);
+    query.getItem(client,request.params.id,(error,result) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results); 
+    });
 });
 
 // Create a new item

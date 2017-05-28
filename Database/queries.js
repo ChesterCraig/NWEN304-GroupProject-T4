@@ -25,9 +25,7 @@ var q = {};
 
 //========== ITEMS ========================
 q.getItems = function(client,callback) {
-    console.log("get all items");
-
-    var query = client.query('select * from ITEM');
+    var query = client.query('select id, name, description, price, image_path from ITEM');
     var results = [];
 
     //Stream results back a row at a time
@@ -35,15 +33,28 @@ q.getItems = function(client,callback) {
         results.push(row);
     });
 
-    // After all data is returned, close connection and return results
+    // After all data is returned, return results
     query.on('end', () => {
         callback(null,results);
     });
-}
+};
+
+q.getItem = function(client,id,callback) {
+    var query = client.query(`select id, name, description, price, image_path from ITEM where id = ${id}`);
+    results = [];
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
 
 q.createItem = function(client, details, callback) {
-    console.log("Create item");
-
     queryString = `INSERT INTO item (name, description, price, image_path) VALUES ('${details.name}','${details.description}',${details.price},'${details.image_path}') `;
     queryString = queryString + `RETURNING id, name, description, price, image_path`;
     var query = client.query(queryString);
@@ -59,6 +70,8 @@ q.createItem = function(client, details, callback) {
         callback(null,results);
     });
 };
+
+
 
 
 //========== USERS_ACCOUNTS ========================
