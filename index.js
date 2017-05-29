@@ -46,34 +46,39 @@ app.use(passport.session());
 //Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
-    console.log("We have a new user:",{id: profile.id,displayName: profile.displayName});
-    var user = {id: profile.id, 
-                displayName: profile.displayName};
+    var user = {id: profile.id, displayName: profile.displayName};
+    console.log("We have a new user:",user);
+
     query.createUser(client,user,(error,data) => {
         if (error) {
+            console.log("Failed to create user record:",user);
             done(error,user);
         } else {
-            console.log("Created user:",data[0]);
+            console.log("Failed to create user record:",data[0]);
             done(null,data[0]);
         }
     });
-  }
-));
+}));
 
 
 //Support for sessions
 passport.serializeUser(function(user, done) {
     //all we need is our ID as this is key in our users table
+    console.log("Serialize user:",user);
     done(null, user.id);
 });
 
 // From id in cookie, pull all user info to put on req.user
 passport.deserializeUser(function(id, done) {
     // Get our user info from database to on req.user
+    console.log("Deserialize user based on id:",id);
+
     query.getUser(client,id,(error,data) => {
         if (error) {
+            console.log("Failed to deserialized user:",error);
             done(error,user);
         } else {
+            console.log("Deserialized user:",data[0]);
             done(null,data[0]);
         }
     });
@@ -86,11 +91,11 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 //Finish the authentication process by attempting to obtain an access token.  
 //If access was granted, the user will be logged in.  Otherwise, authentication has failed.
 app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: '/',
-                                      failureRedirect: '/login' }));
+  passport.authenticate('facebook', {successRedirect: '/',
+                                     failureRedirect: '/login' }));
 
 // Failed login page
-app.get('/get',(request,response) => {
+app.get('/login',(request,response) => {
     response.send('You failed to login<br><a href="/">--Go Home--</a>');
 });
 
