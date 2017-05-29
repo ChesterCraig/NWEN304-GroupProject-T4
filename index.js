@@ -7,19 +7,6 @@ var passport = require('passport')
 var FacebookStrategy = require('passport-facebook').Strategy;
 const query = require("./Database/queries");
 
-
-// Get OAuth config from heroku Config variables if present else config file.
-if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
-    var FacebookStrategyConfig = {
-        clientID: process.env.FB_CLIENT_ID,
-        clientSecret: process.env.FB_CLIENT_SECRET,
-        callbackURL: "https://clothes-shop-nwen304.herokuapp.com/auth/facebook/callback"
-    };
-} else { 
-    var FacebookStrategyConfig = require('./Config/fbConfig.js'); 
-}
-
-
 var path = require('path');
 var routes = require('./routes/index');
 
@@ -36,6 +23,18 @@ app.use(bodyParser.json()); // Gives us req.body elements parsed from clients ht
 
 
 //======== PASSPORT AUTHORISATION STUFF ================================
+
+// Get OAuth config from heroku Config variables if present else config file.
+if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
+    var FacebookStrategyConfig = {
+        clientID: process.env.FB_CLIENT_ID,
+        clientSecret: process.env.FB_CLIENT_SECRET,
+        callbackURL: "https://clothes-shop-nwen304.herokuapp.com/auth/facebook/callback"
+    };
+} else { 
+    var FacebookStrategyConfig = require('./Config/fbConfig.js'); 
+}
+
 // Authentication stuff
 app.use(session({secret: 'keyboard cat',
                  resave: true,
@@ -47,12 +46,15 @@ app.use(passport.session());
 //Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
-    console.log("We have a new user:",{id: user.id,displayName: user.displayName});
-    query.createUser(client,details,(error,data) => {
+    console.log("We have a new user:",{id: profile.id,displayName: profile.displayName});
+    var user = {id: profile.id, 
+                displayName: profile.displayName};
+    query.createUser(client,user,(error,data) => {
         if (error) {
-            done(error,{id: user.id,displayName: user.displayName});
+            done(error,user);
         } else {
-            done(null,{id: user.id,displayName: user.displayName});
+            console.log("Created user:",data[0]);
+            done(null,data[0]);
         }
     });
   }
@@ -68,18 +70,12 @@ passport.serializeUser(function(user, done) {
 // From id in cookie, pull all user info to put on req.user
 passport.deserializeUser(function(id, done) {
     // Get our user info from database to on req.user
-    var query = client.query(`SELECT id, display_name FROM USER_ACCOUNT WHERE id = ${id}`);
-    var user;
-
-    // Stream results back one row at a time 
-    query.on('row', function(row) {
-        user = row;
-    });
-
-    // After all data is returned, close connection and return results 
-    query.on('end', function() {
-        console.log("Deserialize = ",user);
-        done(err,user); //response.json(results); 
+    query.getUser(client,id,(error,data) => {
+        if (error) {
+            done(error,user);
+        } else {
+            done(null,data[0]);
+        }
     });
 });
 
