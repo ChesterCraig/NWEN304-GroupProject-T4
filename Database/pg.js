@@ -33,14 +33,14 @@ client.initSchema = function (callback) {
 
     // Setup USER_ACCOUNTS
     qry = qry + "CREATE TABLE IF NOT EXISTS USER_ACCOUNT (";
-    qry = qry + "id int primary key,";
+    qry = qry + "id bigint primary key,";
     qry = qry + "display_name VARCHAR(255)";
     qry = qry + ");";
 
     // Setup BASKET
     qry = qry + "CREATE TABLE IF NOT EXISTS BASKET (";
     qry = qry + "id serial primary key,";
-    qry = qry + "user_account int REFERENCES user_account ON DELETE CASCADE";       //FK to user
+    qry = qry + "user_account bigint REFERENCES user_account ON DELETE CASCADE";       //FK to user
     qry = qry + ");";
 
     // Setup BASKET_ITEM
