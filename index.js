@@ -112,11 +112,12 @@ app.get('/', function(req, res, next) {
   res.render('index', { title: 'Clothing Shop' });
 });
 
-// example item should be retrieved from db
+// Example item should be retrieved from db
 var item = { title: 'shop',
             item_name:"generic item",
             item_description:"about item" }
-//example item page
+
+// Example item page
 app.get('/test', function(req, res, next) {
   res.render('item_page',item);
 });
@@ -125,6 +126,7 @@ app.get('/test', function(req, res, next) {
 
 //======== RESTFUL ENDPOINTS ================================
 
+//-------- ITEMS -----------
 // Get all items
 app.get('/items', (request,response) => {
     query.getItems(client,(error,results) => {
@@ -175,55 +177,51 @@ app.delete('/items/:id', function(request, response){
     });
 });
 
+//-------- BASKET -----------
 
-//NOT YET IMPLEMENTED
-// // Update an item
-// app.put('/item/:id', function(request, response){
-// 	console.log("Update todo with data: ", request.body);
-//     if ((request.params.id) && ((request.body.completed === true || request.body.completed === false) || (request.body.item))) {
-//         var qryString = `UPDATE item SET col = ????`;
-//         qryString = qryString + ` WHERE id = ${request.params.id}`;
-        
-//         //var query = client.query(qryString, function(error, result){
-//         client.query(qryString, function(error, result){
-//             if (error){
-//                 return response.status(500).send(`Failed to update thing: ${request.params.id} ${error}`);
-//             } else {
-                
-//                 //SEND UPDATED JSON thing BACK
-//                 var query = client.query(`SELECT id, ???, ??? FROM things WHERE id = ${request.params.id}`);
-//                 var results = [];
-    
-//                 // Stream results back one row at a time 
-//                 query.on('row', function(row) {
-//                     results.push(row); 
-//                 });
-    
-//                 // After all data is returned, close connection and return results 
-//                 query.on('end', function() {
-//                     response.json(results); 
-//                 });
-//             }
-//         });
-//     } else {
-//         return response.status(400).send("THING ID is invalid");
-//     }
-// });
-
-
-// Delete a single item
-app.delete('/item/:id', function(request, response){
-    console.log("Delete: " + request.params.id);
-	if ((request.params.id) && (request.params.id > 0)) {
-        var query = client.query(`DELETE FROM item WHERE id = ${request.params.id}`, function(error, result) {
-            if (error){
-                return response.status(500).send("Failed to delete item: " + error);
-            }
-        });       
-    } else {
-        return response.status(400).send("Item ID is invalid");
-    }
+// Create a basket
+app.post('/basket', function(request, response){
+    query.createBasket(client,request.body.basket,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results); 
+    });
 });
+
+// Delete a basket and the contents
+app.delete('/basket/:id', function(request, response){
+    query.deleteBasket(client,request.params.id,(error) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.status(200).send(); 
+    });
+});
+
+//-------- BASKET ITEMS -----------
+
+// Add item to baset
+app.post('/basketitem', function(request, response){
+    query.createBasketItem(client,request.body.basketItem,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results); 
+    });
+});
+
+
+// Remove item from basket
+app.delete('/basket/:id', function(request, response){
+    query.deleteBasketItem(client,request.params.id,(error) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.status(200).send(); 
+    });
+});
+
 
 // Initalise schema if required and start server
 client.initSchema(() => {        

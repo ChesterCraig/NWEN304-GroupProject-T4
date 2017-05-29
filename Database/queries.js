@@ -2,28 +2,29 @@
 //Allows for some abstraction in the main index.js server file.
 
 /*
-getUser
-getUsers
-createUser
-updateUser
-deleteUser
-
-getItem
 getItems
-updateItem
+getItem
+createItem
 deleteItem
 
-getBasket
-getBaskets
-updateBasket
+getUsers
+getUser
+createUser
+deleteUser
+
+createBasket
 deleteBasket
 
-Eventually activity..
+createBasketItem
+deleteBasketItem
+
 */
 
 var q = {};
 
+
 //========== ITEMS ========================
+
 q.getItems = function(client,callback) {
     var query = client.query('select id, name, description, price, image_path from ITEM');
     var results = [];
@@ -77,7 +78,24 @@ q.deleteItem = function(client, id, callback) {
     });
 }
 
+
 //========== USERS_ACCOUNTS ========================
+
+// Get Users 
+q.getUsers = function (client, callback) {
+    var query = client.query(`select * from user_account`);
+    var results = [];
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
 
 // Create User
 q.getUser = function (client,details,callback) {
@@ -100,35 +118,66 @@ q.createUser = function (client,details,callback) {
 
 
 
-// Delete User
-q.getUser = function (client,details) {
-    console.log("Not implemented");
-    return null
+// User
+q.deleteUser = function (client,id,callback) {
+    // Cascading delete defined in schema will result in all basketes and basket items relating to this user being removed too
+    client.query(`DELETE FROM item WHERE id = ${id}`, function(error, result) {
+        callback(error);
+    });
 };
 
 
-// Get Users 
-q.getUsers = function (client, callback) {
-
-    // // Stream results back a row at a time
-    // query.on('row', (row) => {
-    //   results.push(row);
-    // });
-    // // After all data is returned, close connection and return results
-    // query.on('end', () => {
-    //   done();
-    //   return res.json(results);
-    // });
-        
-}
-
 //========== BASKET ========================
 
+q.createBasket = function (client, id, callback) {
+    var queryString = `INSERT INTO BASKET (user_account) VALUES (${id}) RETURNING id, user_account`;
+    var query = client.query(queryString);
+    var results = [];
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
+q.deleteBasket = function (client,id,callback) {
+    //Cascading delte will delete all items in this basket too
+    client.query(`DELETE FROM BASKET WHERE id = ${id}`, function(error, result) {
+        callback(error);
+    });
+};
 
 
+//========== BASKET ITEM ========================
 
+q.createBasketItem = function (client,details,callback) {
+    var queryString = `INSERT INTO basket_item (basket, item, quantity) VALUES (${details.basket},${details.item},${details.quantity})`;
+    queryString = queryString + ``;
+    
+    var query = client.query(queryString);
+    var results = [];
 
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
 
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+}
+
+q.deleteBasketItem = function (client,id,callback) {
+    client.query(`DELETE FROM BASKET_ITEM WHERE id = ${id}`, function(error, result) {
+        callback(error);
+    });
+};
 
 
 module.exports = q;
