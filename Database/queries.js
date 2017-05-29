@@ -110,7 +110,7 @@ q.getUser = function (client,details,callback) {
 
 
 q.createUser = function (client,details,callback) {
-    client.query(`INSERT INTO USER_ACCOUNT (id, display_name) VALUES (${user.id},'${user.displayName}') RETURNING id, display_name`, function (error,result) {
+    client.query(`INSERT INTO USER_ACCOUNT (id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`, function (error,result) {
         console.log("Inserted new user, results:",result);
         callback(error,result);
     });
