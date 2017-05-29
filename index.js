@@ -218,6 +218,18 @@ app.delete('/basket/:id', function(request, response){
     });
 });
 
+//-------- USER ACCOUNTS -----------
+app.get('/users', (request,response) => {
+    query.getUsers(client,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results);
+    });
+});
+
+//======== RESTFUL ENDPOINTS END ================================
+
 
 // Initalise schema if required and start server
 client.initSchema(() => {        
