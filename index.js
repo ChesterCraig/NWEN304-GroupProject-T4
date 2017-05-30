@@ -54,7 +54,7 @@ passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, 
             console.log("Failed to create user record:",user);
             done(error,user);
         } else {
-            console.log("Failed to create user record:",data[0]);
+            console.log("Succesfully created user record:",data[0]);
             done(null,data[0]);
         }
     });
