@@ -120,7 +120,7 @@ q.getUsers = function (client, callback) {
 // Create User
 q.getUser = function (client,id,callback) {
     if (id) {
-        var query = client.query(`SELECT id, display_name FROM USER_ACCOUNT WHERE id = ${id}`);
+        var query = client.query(`SELECT id, display_name FROM USER_ACCOUNT WHERE id = '${id}'`);    //Dont forget to remove single quote here if we revert id to numeric type
         var results = [];
 
         //Handle error
