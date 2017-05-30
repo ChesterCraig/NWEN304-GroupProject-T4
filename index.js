@@ -50,16 +50,21 @@ passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, 
     console.log("User connected, add to db if new:",user);
 
     query.getUser(client,user.id,(error,data) => {
-        console.log("Did we find the user in the database?",data);
+        console.log("Did we find the user in the database?",user);
 
-        if (data[0]) {
-            console.log("Yes we did find the user");
-        } else {
-            console.log("No we didn't, new users");
+        if (error) {
+            console.log("No, error occured",error);
+        } else if (data.length == 1) {
+            //User exists
+            console.log("Yes, user already exists",data[0]);
+            done(null,data[0]);
+        } else { 
+            //User doesn't exist, create
+            console.log("No, user does not exists -> Create it.");
             query.createUser(client,user,(error,data) => {
                 if (error) {
-                    console.log("Failed to create user record:",user);
-                    done(error,user);
+                    console.log("Failed to create user record");
+                    done(error,null);
                 } else {
                     console.log("Succesfully created user record:",data[0]);
                     done(null,data[0]);
