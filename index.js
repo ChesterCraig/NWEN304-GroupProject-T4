@@ -221,7 +221,6 @@ app.post('/basketitem', function(request, response){
     });
 });
 
-
 // Remove item from basket
 app.delete('/basket/:id', function(request, response){
     query.deleteBasketItem(client,request.params.id,(error) => {
@@ -235,6 +234,15 @@ app.delete('/basket/:id', function(request, response){
 //-------- USER ACCOUNTS -----------
 app.get('/users', (request,response) => {
     query.getUsers(client,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results);
+    });
+});
+
+app.get('/users/:id', (request,response) => {
+    query.getUser(client,id,(error,results) => {
         if (error) {
             return response.status(400).send(error);
         }
