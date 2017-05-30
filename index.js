@@ -136,6 +136,17 @@ var item = { title: 'shop',
 app.get('/test', function(req, res, next) {
   res.render('item_page',item);
 });
+
+// Test page for who is logged in 
+app.get('/check', function(req, res) {
+    if (req.user) {
+        res.send(`<h1>Who are you?</h1><br>${JSON.stringify(req.user)}`);
+    } else {
+        res.send(`<h1>You're a nobody.</h1>`);
+    }
+});
+
+
 //======== RENDERED HTML PAGES END ================================
 
 
