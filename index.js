@@ -47,15 +47,24 @@ app.use(passport.session());
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
     var user = {id: profile.id, displayName: profile.displayName};
-    console.log("We have a new user:",user);
+    console.log("User connected, add to db if new:",user);
 
-    query.createUser(client,user,(error,data) => {
-        if (error) {
-            console.log("Failed to create user record:",user);
-            done(error,user);
+    query.getUser(client,user.id,(error,data) => {
+        console.log("Did we find the user in the database?",data);
+
+        if (data[0]) {
+            console.log("Yes we did find the user");
         } else {
-            console.log("Succesfully created user record:",data[0]);
-            done(null,data[0]);
+            console.log("No we didn't, new users");
+            query.createUser(client,user,(error,data) => {
+                if (error) {
+                    console.log("Failed to create user record:",user);
+                    done(error,user);
+                } else {
+                    console.log("Succesfully created user record:",data[0]);
+                    done(null,data[0]);
+                }
+            });
         }
     });
 }));
