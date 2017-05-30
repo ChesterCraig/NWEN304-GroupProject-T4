@@ -86,7 +86,7 @@ var items = [
 	"name":"Blue T-Shirt",
 	"description":"Blue T-Shirt - Writing",
 	"price":15.00,
-	"image_path":"/images/tshirt2.jpg"
+	"image_path":"/images/tshirt1.jpg"
 	}
 },
 {
@@ -94,7 +94,7 @@ var items = [
 	"name":"Yellow Shorts",
 	"description":"Yellow T-Shirt - Writing",
 	"price":15.00,
-	"image_path":"/images/tshirt.jpg"
+	"image_path":"/images/tshirt2.jpg"
 	}
 }
 ];
