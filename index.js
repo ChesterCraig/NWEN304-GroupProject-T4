@@ -173,13 +173,23 @@ app.post('/items', (request,response) => {
     });
 });
 
-// Get specific item
+// Get specific item 
+// returns html or json depending on request accept header 
 app.get('/items/:id', (request,response) => {
     query.getItem(client,request.params.id,(error,result) => {
         if (error) {
             return response.status(400).send(error);
         }
-        response.json(results); 
+        if (request.accepts('html')){
+            response.render('item_page',results[0]);
+        }
+        else if (request.accepts('application/json')) {
+            response.json(results);
+        }
+        else{
+            respone.accepts()
+            return response.status(400);
+        }
     });
 });
 
