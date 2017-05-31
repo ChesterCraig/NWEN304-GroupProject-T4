@@ -279,7 +279,7 @@ app.get('/users/:id', (request,response) => {
 //======== RESTFUL ENDPOINTS END ================================
 
 
-// Initalise schema if required and start server
+ Initalise schema if required and start server
 client.initSchema(() => {        
     //Start web server
     var port = process.env.PORT || 8080;
