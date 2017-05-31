@@ -1,5 +1,5 @@
 body {
-	background: linear-gradient(90deg, #649ae5, #395c8d);
+	background: linear-gradient(90deg, #000000, #555555, #000000);
 }
 
 .navbar-header, h1 {
@@ -14,6 +14,20 @@ body {
 }
 
 p {
-		font-family: Amatic SC;
-		font-size: 150%;
+	font-family: Amatic SC;
+	font-size: 150%;
+}
+
+#footer{
+    position:fixed;
+    height:50px;
+    background-color: #222222;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    margin: auto;
+    width: 85%;
+    border-radius: 5px;
+    text-align: center;
+
 }

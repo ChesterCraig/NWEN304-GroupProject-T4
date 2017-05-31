@@ -2,7 +2,7 @@ extends layout
 block body
 	.navbar-wrapper
 		.container
-			+navbar("Hipster Clothing co.","dropdown_menu")
+			+navbar("Hipster Clothing co.","dropdown_menu", "inverse")
 				+nav_item("/","active") Home
 				+nav_item("/test") Items
 				+nav_item("/auth/facebook") Login
@@ -12,20 +12,23 @@ block body
 					+nav_item("#") Something else here
     
 	.container
-		.col-md-4
-			p.lead
-				+list-group-links([
-					{text:"Item 1",url:"/items/3"},
-					{text:"Item 2",url:"/items/4"},
-					{text:"Item 3",url:"/items/5"},],0)
+		.col-md-13
+			+carousel("myCarousel",[
+			{image:"images/1200x300/1.jpg",h1:"I don't believe in labels",p:"Hipster Clothing co"},
+			{image:"images/1200x300/2.jpg",h1:"Organic grass-fed caffè latte",p:"Hipster Clothing co"},
+			{image:"images/1200x300/3.jpg",h1:"I got this for a dollar at an Opshop",p:"Hipster Clothing co"}
+			])
 
-		.col-md-8
-			+carousel("myCarousel",[{image:"images/1.jpg",h1:"I don't believe in labels",p:"Hipster Clothing co"},
-				{image:"images/2.jpg",h1:"Organic grass-fed caffè latte",p:"Hipster Clothing co"},
-				{image:"images/3.jpg",h1:"I got this for $1 at an Opshop",p:"Hipster Clothing co"}])
+
+			.col-md-4
+				p.lead
+					+list-group-links([
+						{text:"Item 1",url:"/items/3"},
+						{text:"Item 2",url:"/items/4"},
+						{text:"Item 3",url:"/items/5"},],0)
 
 		footer
-			p.pull-right
+			#footer
 				a(href='#') Back to top
 
 
