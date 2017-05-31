@@ -1,3 +1,19 @@
 body {
 	background: linear-gradient(90deg, #649ae5, #395c8d);
 }
+
+.navbar-header, h1 {
+	font-family: Amatic SC;
+	font-weight: bold;
+}
+
+.h1{
+	font-family: Amatic SC;
+	font-weight: bold;
+	text-shadow: 2px 2px #ff0000;
+}
+
+p {
+		font-family: Amatic SC;
+		font-size: 150%;
+}

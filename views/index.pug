@@ -2,9 +2,9 @@ extends layout
 block body
 	.navbar-wrapper
 		.container
-			+navbar("Project name","dropdown_menu")
+			+navbar("Hipster Clothing co.","dropdown_menu")
 				+nav_item("/","active") Home
-				+nav_item("/test") TEST ITEM
+				+nav_item("/test") Items
 				+nav_item("/auth/facebook") Login
 				+nav_item_dropdown("#")(label="Dropdown")
 					+nav_item("#") Action
@@ -13,16 +13,16 @@ block body
     
 	.container
 		.col-md-4
-			p.lead Shop Name
+			p.lead
 				+list-group-links([
 					{text:"Item 1",url:"/items/3"},
 					{text:"Item 2",url:"/items/4"},
 					{text:"Item 3",url:"/items/5"},],0)
 
 		.col-md-8
-			+carousel("myCarousel",[{image:"images/1.jpg",h1:"Example headline",p:"rules."},
-				{image:"images/2.jpg",h1:"Another example headline",p:"d elit."},
-				{image:"images/3.jpg",h1:"One more for good measure.",p:"Celit."}])
+			+carousel("myCarousel",[{image:"images/1.jpg",h1:"I don't believe in labels",p:"Hipster Clothing co"},
+				{image:"images/2.jpg",h1:"Organic grass-fed caffè latte",p:"Hipster Clothing co"},
+				{image:"images/3.jpg",h1:"I got this for $1 at an Opshop",p:"Hipster Clothing co"}])
 
 		footer
 			p.pull-right
