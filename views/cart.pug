@@ -16,11 +16,9 @@ block body
 						+nav_item("/") Men
 						+nav_item("/") Women
 						+nav_item("/") Accessories
-						//- +navbar("Hipster Clothing co.","dropdown_menu", "inverse")
-						//-+nav_item("/","active") Home
 					ul.nav.navbar-nav.navbar-right
 						+nav_item("/auth/facebook") Login
-						+nav_item("/Cart") Cart 
+						+nav_item("/Cart","active") Cart 
 							span.glyphicon.glyphicon-shopping-cart
 							
 							
@@ -29,19 +27,17 @@ block body
     
 	.container
 		.col-md-13
-			+carousel("myCarousel",[
-			{image:"images/1200x300/1.jpg",h1:"I don't believe in labels",p:"Hipster Clothing co"},
-			{image:"images/1200x300/2.jpg",h1:"Organic grass-fed caffè latte",p:"Hipster Clothing co"},
-			{image:"images/1200x300/3.jpg",h1:"I got this for a dollar at an Opshop",p:"Hipster Clothing co"}
-			])
+		+panel-default("Cart")
+			table(style='width:100%')
+				tr
+					th Name
+					th Quantity
+					th Price
+				tr
+					td Shirt
+					td 1
+					td 25.00
 
-
-			.col-md-4
-				p.lead
-					+list-group-links([
-						{text:"Item 1",url:"/items/3"},
-						{text:"Item 2",url:"/items/4"},
-						{text:"Item 3",url:"/items/5"},],0)
 
 		footer
 			#footer

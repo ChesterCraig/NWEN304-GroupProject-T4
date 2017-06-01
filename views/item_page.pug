@@ -2,14 +2,24 @@ extends layout
 block body
 	.navbar-wrapper
 		.container
-			+navbar("Project name","dropdown_menu")
-				+nav_item("/") Home
-				+nav_item("/test","active") Item
-				+nav_item("index.html") Contact
-				+nav_item_dropdown("#")(label="Dropdown")
-					+nav_item("#") Action
-					+nav_item("#") Another Action
-					+nav_item("#") Something else here
+			nav( role="navigation", class=["navbar", "navbar-inverse"] )
+				.navbar-header
+					button.navbar-toggle.collapsed( type="button", data-toggle="collapse", data-target="#dropdown_menu", aria-expanded="false", aria-controls="navbar")
+						span.sr-only Toggle navigation
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(href="/") Hipster Clothing co.
+
+				#dropdown_menu.collapse.navbar-collapse
+					ul.nav.navbar-nav
+						+nav_item("/") Men
+						+nav_item("/") Women
+						+nav_item("/") Accessories
+					ul.nav.navbar-nav.navbar-right
+						+nav_item("/auth/facebook") Login
+						+nav_item("/Cart") Cart 
+							span.glyphicon.glyphicon-shopping-cart
     
 	.container
 		.col-md-3
@@ -29,6 +39,7 @@ block body
 						| #{name}. 
 					h3 #{description}.
 					h4 $ #{price}
+					+btn("Add To Cart")
 			hr.featurette-divider
 		
 		footer

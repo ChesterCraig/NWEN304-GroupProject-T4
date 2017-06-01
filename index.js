@@ -134,9 +134,9 @@ var item = { title: 'shop',
             item_name:"generic item",
             item_description:"about item" }
 
-// Example item page
-app.get('/test', function(req, res, next) {
-  res.render('item_page',item);
+// Example cart page
+app.get('/cart', function(req, res, next) {
+  res.render('cart');
 });
 
 // Test page for who is logged in 
