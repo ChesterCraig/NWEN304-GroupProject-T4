@@ -147,6 +147,14 @@ app.get('/check', function(req, res) {
         res.send(`<h1>You're a nobody.</h1>`);
     }
 });
+// get user id temporary solution?
+app.get('/user', function(req, res) {
+    if (req.user) {
+        res.send(req.user);
+    } else {
+        res.status(400).send('not loggedin');
+    }
+});
 
 
 //======== RENDERED HTML PAGES END ================================
