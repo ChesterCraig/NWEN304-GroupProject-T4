@@ -6,12 +6,14 @@ const {client} = require("./Database/pg");
 var passport = require('passport')
 var FacebookStrategy = require('passport-facebook').Strategy;
 const query = require("./Database/queries");
+var initialItems = require("./put_items");
 
 var path = require('path');
 var routes = require('./routes/index');
 
 //create express app
 var app = express();
+
 
 // setup pug/jade view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -282,6 +284,7 @@ app.get('/users/:id', (request,response) => {
 //Initalise schema if required and start server
 client.initSchema(() => {        
     //Start web server
+    client.populateItems(initialItems);
     var port = process.env.PORT || 8080;
     app.listen(port, () => {
         console.log(`App listening on port ${port}`);

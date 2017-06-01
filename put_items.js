@@ -1,5 +1,4 @@
-const {client} = require("./Database/pg");
-const query = require("./Database/queries");
+
 var items = [
 {
 	"item": {
@@ -99,11 +98,4 @@ var items = [
 }
 ];
 
-items.forEach(function(item){
-    query.createItem(client,item.item,function(error,results){
-        if (error) {
-            console.log(error);
-        }
-    })
-});
-
+module.exports =items;

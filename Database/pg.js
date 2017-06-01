@@ -66,4 +66,33 @@ client.initSchema = function (callback) {
     });
 }
 
+// populate Item table if it is empty
+client.populateItems = function(items){
+    client.query("SELECT * FROM item LIMIT 1", function(error, result){
+        if (error) {
+            console.log('Failed to run init schema query. Server not started.');
+            throw error;
+        } else {
+            if (result.rowCount < 1){
+                var queryString = "INSERT INTO item (name, description, price, image_path) VALUES";
+                for(i = 0; i < items.length; i++){
+                    var item = items[i].item;
+                    if (i > 0){
+                        queryString += `,`
+                    }
+                    queryString = queryString + `('${item.name}', '${item.description}', ${item.price} ,'${item.image_path}')`;
+                }
+                queryString = queryString;
+                client.query(queryString, function(error, result){
+                    if (error) {
+                        console.log('Failed to populate Database. Server not started.');
+                        throw error;
+                    }
+                });
+            }
+        }
+    });
+
+}
+
 module.exports = {client};
