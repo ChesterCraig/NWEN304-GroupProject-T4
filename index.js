@@ -2,7 +2,7 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require("body-parser");
-const client = require("./Database/pg");
+const {client} = require("./Database/pg");
 var passport = require('passport')
 var FacebookStrategy = require('passport-facebook').Strategy;
 const query = require("./Database/queries");
@@ -280,10 +280,10 @@ app.get('/users/:id', (request,response) => {
 
 
 //Initalise schema if required and start server
-//client.initSchema(() => {        
+client.initSchema(() => {        
     //Start web server
     var port = process.env.PORT || 8080;
     app.listen(port, () => {
         console.log(`App listening on port ${port}`);
     });
-//});
+});
