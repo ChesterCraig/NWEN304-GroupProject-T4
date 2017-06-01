@@ -19,7 +19,7 @@ block body
 						//- +navbar("Hipster Clothing co.","dropdown_menu", "inverse")
 						//-+nav_item("/","active") Home
 					ul.nav.navbar-nav.navbar-right
-						+nav_item("/auth/facebook") Login
+						+nav_item("/auth/facebook","login") Login
 						+nav_item("/Cart") Cart 
 							span.glyphicon.glyphicon-shopping-cart
 							
@@ -46,6 +46,10 @@ block body
 		footer
 			#footer
 				a(href='#') Back to top
-
+block scripts
+	script(src="/js/jquery.min.js")
+	script(src="/js/bootstrap.min.js")
+	script(src="/js/home.js")
+	
 
 
