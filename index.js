@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const {client} = require("./Database/pg");
 var passport = require('passport')
 var FacebookStrategy = require('passport-facebook').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 const query = require("./Database/queries");
 var initialItems = require("./put_items");
 
@@ -45,37 +46,67 @@ app.use(session({secret: 'keyboard cat',
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Setup Passport Facebook OAuth
+// Setup local (email/password) authentication
+passport.use(new LocalStrategy(
+    function(email, password, done) {
+        query.getUser(client,{email: email},(error,data) => {
+
+        console.log("local - User connected, add to db if new:",user);
+        console.log("local - Did we find the user in the database?",user);
+        if (error) {
+            console.log("local - No, error occured",error);
+            return done(error);
+
+        } else if (data.length != 1) {
+                        //User doesn't exist, create
+            console.log("local - No, user does not exists");
+            done(null,false,{message: `User '${email}' doesn't exits.`});
+        } else {
+            //User exists
+            console.log("local - Yes, user already exists (Pretend we've validated thier password",data[0]);
+            done(null,data[0]);
+
+            //VALIDATE PASSOWRD 
+                //   if (!user) {
+    //     return done(null, false, { message: 'Incorrect username.' });
+    //   }
+    //   if (!user.validPassword(password)) {
+    //     return done(null, false, { message: 'Incorrect password.' });
+    //   }
+    //   return done(null, user);
+
+        }
+    })
+}));
+
+
+// Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
     var user = {facebook_id: profile.id, displayName: profile.displayName};
-    console.log("User connected, add to db if new:",user);
-
-    query.getUser(client,user,(error,data) => {
-        console.log("Did we find the user in the database?",user);
-
-        if (error) {
-            console.log("No, error occured",error);
-        } else if (data.length == 1) {
-            //User exists
-            console.log("Yes, user already exists",data[0]);
-            done(null,data[0]);
-        } else { 
-            //User doesn't exist, create
-            console.log("No, user does not exists -> Create it.");
-            query.createUser(client,user,(error,data) => {
-                if (error) {
-                    console.log("Failed to create user record");
-                    done(error,null);
-                } else {
-                    console.log("Succesfully created user record:",data[0]);
-                    done(null,data[0]);
-                }
-            });
-        }
-    });
+    console.log("fb - User connected, add to db if new:",user);
+    console.log("fb - Did we find the user in the database?",user);
+    if (error) {
+        console.log("fb - No, error occured",error);
+        return done(error);
+    } else if (data.length == 1) {
+        //User exists
+        console.log("fb - Yes, user already exists",data[0]);
+        done(null,data[0]);
+    } else { 
+        //User doesn't exist, create
+        console.log("fb - No, user does not exists -> Create it.");
+        query.createUser(client,user,(error,data) => {
+            if (error) {
+                console.log("fb - Failed to create user record");
+                done(error,null);
+            } else {
+                console.log("fb - Succesfully created user record:",data[0]);
+                done(null,data[0]);
+            }
+        });
+    }
 }));
-
 
 //Support for sessions
 passport.serializeUser(function(user, done) {
@@ -109,6 +140,14 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', {successRedirect: '/',
                                      failureRedirect: '/login' }));
+
+
+
+
+// Local login - not yet full supported
+app.post('/auth/local', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }));
+
+
 
 // Failed login page
 app.get('/login',(request,response) => {

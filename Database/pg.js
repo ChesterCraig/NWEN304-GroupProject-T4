@@ -34,7 +34,7 @@ client.initSchema = function (callback) {
     // Setup USER_ACCOUNTS
     qry = qry + "CREATE TABLE IF NOT EXISTS USER_ACCOUNT (";
     qry = qry + "id serial primary key,";
-    qry = qry + "email VARCHAR(255),";
+    qry = qry + "email VARCHAR(255) UNIQUE,";
     qry = qry + "password_hash int,";
     qry = qry + "facebook_id VARCHAR(255) UNIQUE,";     //Ideally should be big int but id of 1384043198297657 is out of range
     qry = qry + "display_name VARCHAR(255),";
