@@ -117,7 +117,7 @@ q.getUsers = function (client, callback) {
     });
 };
 
-// Create User
+// Get User
 q.getUser = function (client,id,callback) {
     if (id) {
         var query = client.query(`SELECT id, display_name FROM USER_ACCOUNT WHERE id = '${id}'`);    //Dont forget to remove single quote here if we revert id to numeric type
@@ -142,7 +142,7 @@ q.getUser = function (client,id,callback) {
     }
 };
 
-
+// Create User
 q.createUser = function (client,details,callback) {
     var query = client.query(`INSERT INTO USER_ACCOUNT (id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`);
     var results = [];
@@ -163,12 +163,11 @@ q.createUser = function (client,details,callback) {
     });
 };
 
-
-
-// User
+// Delete User
 q.deleteUser = function (client,id,callback) {
     // Cascading delete defined in schema will result in all basketes and basket items relating to this user being removed too
-    client.query(`DELETE FROM item WHERE id = ${id}`, function(error) {
+    console.log(`DELETE FROM USER_ACCOUNT WHERE id = '${id}'`);
+    client.query(`DELETE FROM USER_ACCOUNT WHERE id = '${id}'`, function(error) {
         callback(error);
     });
 };

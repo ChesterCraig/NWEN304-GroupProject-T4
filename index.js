@@ -278,13 +278,24 @@ app.get('/users', (request,response) => {
 });
 
 app.get('/users/:id', (request,response) => {
-    query.getUser(client,id,(error,results) => {
+    query.getUser(client,request.params.id,(error,results) => {
         if (error) {
             return response.status(400).send(error);
         }
         response.json(results);
     });
 });
+
+// Remove user
+app.delete('/users/:id', function(request, response){
+    query.deleteUser(client,request.params.id,(error) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.status(200).send(); 
+    });
+});
+
 
 //======== RESTFUL ENDPOINTS END ================================
 
