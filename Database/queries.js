@@ -174,37 +174,6 @@ q.deleteUser = function (client,id,callback) {
 };
 
 
-//========== BASKET ========================
-
-q.createBasket = function (client, id, callback) {
-    var queryString = `INSERT INTO BASKET (user_account) VALUES (${id}) RETURNING id, user_account`;
-    var query = client.query(queryString);
-    var results = [];
-
-    //Handle error
-    query.on('error', (error) => {
-        callback(error,null);
-    });
-
-    //Stream results back a row at a time
-    query.on('row', (row) => {
-        results.push(row);
-    });
-
-    // After all data is returned, close connection and return results
-    query.on('end', () => {
-        callback(null,results);
-    });
-};
-
-q.deleteBasket = function (client,id,callback) {
-    //Cascading delte will delete all items in this basket too
-    client.query(`DELETE FROM BASKET WHERE id = ${id}`, function(error) {
-        callback(error);
-    });
-};
-
-
 //========== BASKET ITEM ========================
 
 q.createBasketItem = function (client,details,callback) {

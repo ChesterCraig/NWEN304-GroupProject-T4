@@ -44,16 +44,10 @@ client.initSchema = function (callback) {
     // Setup USER_ACTIVITY - Pending, this table will track user activity.
 
 
-    // Setup BASKET
-    qry = qry + "CREATE TABLE IF NOT EXISTS BASKET (";
-    qry = qry + "id serial primary key,";
-    qry = qry + "user_account int REFERENCES user_account ON DELETE CASCADE";       //FK to user
-    qry = qry + ");";
-
     // Setup BASKET_ITEM
     qry = qry + "CREATE TABLE IF NOT EXISTS BASKET_ITEM (";
     qry = qry + "id serial primary key,";
-    qry = qry + "basket int REFERENCES basket ON DELETE CASCADE,";                  //FK to basket
+    qry = qry + "user_account int REFERENCES user_account ON DELETE CASCADE,";       //FK to user
     qry = qry + "item int REFERENCES item ON DELETE CASCADE,";                      //FK to item
     qry = qry + "quantity int";
     qry = qry + ");";

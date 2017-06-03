@@ -223,33 +223,12 @@ app.delete('/items/:id', function(request, response){
     });
 });
 
-//-------- BASKET -----------
-
-// Create a basket
-app.post('/basket', function(request, response){
-    query.createBasket(client,request.body.basket,(error,results) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.json(results); 
-    });
-});
-
-// Delete a basket and the contents
-app.delete('/basket/:id', function(request, response){
-    query.deleteBasket(client,request.params.id,(error) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.status(200).send(); 
-    });
-});
 
 //-------- BASKET ITEMS -----------
 
 // get all items in a basket
-app.post('/basketitems/id', function(request, response){
-    query.getBasketItems(client,request.params.id,(error,results) => {
+app.get('/basketitems', function(request, response){
+    query.getBasketItems(client,(error,results) => {
         if (error) {
             return response.status(400).send(error);
         }
@@ -257,7 +236,7 @@ app.post('/basketitems/id', function(request, response){
     });
 });
 
-// Add item to baset
+// Add item to baset (user must be logged in to do this)
 app.post('/basketitem', function(request, response){
     query.createBasketItem(client,request.body.basketItem,(error,results) => {
         if (error) {
@@ -267,7 +246,7 @@ app.post('/basketitem', function(request, response){
     });
 });
 
-// Remove item from basket
+// Remove item from basket 
 app.delete('/basket/:id', function(request, response){
     query.deleteBasketItem(client,request.params.id,(error) => {
         if (error) {
