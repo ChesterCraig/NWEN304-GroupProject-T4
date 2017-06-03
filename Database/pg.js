@@ -47,7 +47,7 @@ client.initSchema = function (callback) {
     // Setup BASKET
     qry = qry + "CREATE TABLE IF NOT EXISTS BASKET (";
     qry = qry + "id serial primary key,";
-    qry = qry + "user_account VARCHAR(255) REFERENCES user_account ON DELETE CASCADE";       //FK to user
+    qry = qry + "user_account int REFERENCES user_account ON DELETE CASCADE";       //FK to user
     qry = qry + ");";
 
     // Setup BASKET_ITEM

@@ -99,7 +99,7 @@ q.deleteItem = function(client, id, callback) {
 
 // Get Users 
 q.getUsers = function (client, callback) {
-    var query = client.query(`select * from user_account`);
+    var query = client.query(`select id, email, facebook_id, display_name, is_admin from user_account`);
     var results = [];
 
     //Handle error
@@ -121,7 +121,7 @@ q.getUsers = function (client, callback) {
 // Get User
 q.getUser = function (client,id,callback) {
     if (id) {
-        var query = client.query(`SELECT id, display_name FROM USER_ACCOUNT WHERE id = '${id}'`);    //Dont forget to remove single quote here if we revert id to numeric type
+        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE id = ${id}`);
         var results = [];
 
         //Handle error
