@@ -97,7 +97,7 @@ q.deleteItem = function(client, id, callback) {
 
 //========== USERS_ACCOUNTS ========================
 
-// Get Users 
+// Get Users
 q.getUsers = function (client, callback) {
     var query = client.query(`select id, email, facebook_id, display_name, is_admin from user_account`);
     var results = [];
@@ -118,34 +118,38 @@ q.getUsers = function (client, callback) {
     });
 };
 
-// Get User
-q.getUser = function (client,id,callback) {
-    if (id) {
-        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE id = ${id}`);
-        var results = [];
-
-        //Handle error
-        query.on('error', (error) => {
-            callback(error,null);
-        });
-
-        //Stream results back a row at a time
-        query.on('row', (row) => {
-            results.push(row);
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', () => {
-            callback(null,results);
-        });
+// Get User (supports id or facebook_id)
+q.getUser = function (client,details,callback) {
+    if (details.id) {
+        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE id = ${details.facebook_id}`);
+    } else if (details.facebook_id) {
+        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE facebook_id = ${details.facebook_id}`);
     } else {
-        callback("Invalid, no ID provided")
+        callback("Invalid, no ID provided");
     }
+
+    var results = [];
+
+    //Handle error
+    query.on('error', (error) => {
+        callback(error,null);
+    });
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
 };
 
 // Create User
 q.createUser = function (client,details,callback) {
-    var query = client.query(`INSERT INTO USER_ACCOUNT (id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`);
+    if (details.facebook_id)
+    var query = client.query(`INSERT INTO USER_ACCOUNT (facebook_id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`);
     var results = [];
 
     //Handle error

@@ -48,10 +48,10 @@ app.use(passport.session());
 //Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
-    var user = {id: profile.id, displayName: profile.displayName};
+    var user = {facebook_id: profile.id, displayName: profile.displayName};
     console.log("User connected, add to db if new:",user);
 
-    query.getUser(client,user.id,(error,data) => {
+    query.getUser(client,user,(error,data) => {
         console.log("Did we find the user in the database?",user);
 
         if (error) {
@@ -89,7 +89,7 @@ passport.deserializeUser(function(id, done) {
     // Get our user info from database to on req.user
     console.log("Deserialize user based on id:",id);
 
-    query.getUser(client,id,(error,data) => {
+    query.getUser(client,{id: id},(error,data) => {
         if (error) {
             console.log("Failed to deserialized user:",error);
             done(error,user);
@@ -147,7 +147,8 @@ app.get('/check', function(req, res) {
         res.send(`<h1>You're a nobody.</h1>`);
     }
 });
-// get user id temporary solution?
+
+// Enable user to get thier details inc. id
 app.get('/user', function(req, res) {
     if (req.user) {
         res.send(req.user);
@@ -267,7 +268,7 @@ app.get('/users', (request,response) => {
 });
 
 app.get('/users/:id', (request,response) => {
-    query.getUser(client,request.params.id,(error,results) => {
+    query.getUser(client,{id: request.params.id},(error,results) => {
         if (error) {
             return response.status(400).send(error);
         }
