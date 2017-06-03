@@ -247,6 +247,16 @@ app.delete('/basket/:id', function(request, response){
 
 //-------- BASKET ITEMS -----------
 
+// get all items in a basket
+app.post('/basketitems/id', function(request, response){
+    query.getBasketItems(client,request.params.id,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results); 
+    });
+});
+
 // Add item to baset
 app.post('/basketitem', function(request, response){
     query.createBasketItem(client,request.body.basketItem,(error,results) => {

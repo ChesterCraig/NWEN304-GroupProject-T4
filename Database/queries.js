@@ -175,6 +175,27 @@ q.deleteUser = function (client,id,callback) {
 
 //========== BASKET ========================
 
+q.getBasketItems = function (client, id, callback) {
+    var queryString = `select id, item, quantity from BASKET_ITEM where basket = ${id}`;
+    var query = client.query(queryString);
+    var results = [];
+
+    //Handle error
+    query.on('error', (error) => {
+        callback(error,null);
+    });
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
 q.createBasket = function (client, id, callback) {
     var queryString = `INSERT INTO BASKET (user_account) VALUES (${id}) RETURNING id, user_account`;
     var query = client.query(queryString);
