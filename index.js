@@ -340,7 +340,7 @@ app.post('/user', function(request, response){
 app.get('/users', (request,response) => {
     query.getUsers(client,(error,results) => {
         if (error) {
-            return response.status(400);//.send(error);
+            return response.status(400).send(error);
         }
         response.json(results);
     });
