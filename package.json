@@ -13,6 +13,7 @@
   "author": "Chester Craig, Patrick Ryan, Reuben Lovell-Smith",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "express-session": "^1.15.3",

@@ -2,14 +2,15 @@
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require("body-parser");
-var passport = require('passport')
-var FacebookStrategy = require('passport-facebook').Strategy;
-var LocalStrategy = require('passport-local').Strategy;
-var path = require('path');
+const passport = require('passport')
+const FacebookStrategy = require('passport-facebook').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const path = require('path');
+const bcrypt = require('bcryptjs');
 
 // Import Modules (local)
-var routes = require('./routes/index');
-var initialItems = require("./put_items");
+const routes = require('./routes/index');
+const initialItems = require("./put_items");
 const query = require("./Database/queries");
 const {client} = require("./Database/pg");
 

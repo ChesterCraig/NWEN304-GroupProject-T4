@@ -7,6 +7,6 @@ Users may browse without a login and add items to thier cart.
 To pretend-to-purchase items, the user will need to be registered with the website.
 Registered users may save thier cart contents for a later time.
 
-User registration is handled via facebook OAuth meaning you require a facebook account and use it to sign up.
+User registration is handled via (email/password) or facebook OAuth meaning you can opt to use a facebook account register and sign in.
 
 
