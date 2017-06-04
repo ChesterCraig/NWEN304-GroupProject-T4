@@ -180,7 +180,7 @@ q.getUserPasswordHash = function (client,details,callback) {
 
 // Create User
 q.createFaceBookUser = function (client,details,callback) {
-    var query = client.query(`INSERT INTO USER_ACCOUNT (facebook_id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`);
+    var query = client.query(`INSERT INTO USER_ACCOUNT (facebook_id, display_name) VALUES ('${details.facebook_id}','${details.displayName}') RETURNING id, facbook_id, display_name`);
     var results = [];
 
     //Handle error
