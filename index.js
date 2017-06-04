@@ -104,7 +104,7 @@ passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, 
    // Here we do something with the new user.. likely add to our database
     var user = {facebook_id: profile.id, displayName: profile.displayName};
     console.log("fb - User connected, add to db if new:",user);
-    query.getUser(client,user.facebook_id,(error,data) => {
+    query.getUser(client,user,(error,data) => {
         console.log("fb - Did we find the user in the database?");
         if (error) {
             console.log("fb - No, error occured",error);

@@ -34,7 +34,7 @@ q.getItems = function(client,callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -54,7 +54,7 @@ q.getItem = function(client,id,callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -76,7 +76,7 @@ q.createItem = function(client, details, callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -106,7 +106,7 @@ q.getUsers = function (client, callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -129,14 +129,14 @@ q.getUser = function (client,details,callback) {
     } else if (details.email) {
         var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE email = '${details.email}'`);
     } else {
-        callback("Invalid, no ID provided");
+        return callback("Invalid, no ID provided");
     }
 
     var results = [];
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -158,14 +158,14 @@ q.getUserPasswordHash = function (client,details,callback) {
     } else if (details.email) {
         var query = client.query(`SELECT id, password_hash FROM USER_ACCOUNT WHERE email = '${details.email}'`);
     } else {
-        callback("Invalid, no ID provided");
+        return callback("Invalid, no ID provided");
     }
 
     var results = [];
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -186,7 +186,7 @@ q.createFaceBookUser = function (client,details,callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -208,7 +208,7 @@ q.createLocalUser = function (client,details,callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -242,7 +242,7 @@ q.createBasketItem = function (client,details,callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
@@ -269,7 +269,7 @@ q.getBasketItems = function (client, id, callback) {
 
     //Handle error
     query.on('error', (error) => {
-        callback(error,null);
+        return callback(error,null);
     });
 
     //Stream results back a row at a time
