@@ -58,29 +58,43 @@ passport.use(new LocalStrategy({
 
         query.getUser(client,{email: email},(error,data) => {
             console.log(`local - Did we find the user in the database under email ${email}?`,data);
+            
+            // Check for errors
             if (error) {
                 console.log("local - No, error occured",error);
                 return done(error);
-
             } else if (data.length != 1) {
-                            //User doesn't exist, create
+                //User doesn't exist, create
                 console.log("local - No, user does not exists");
                 done(null,false,{message: `User '${email}' doesn't exits.`});
-            } else {
-                //User exists
-                console.log("local - Yes, user already exists (Pretend we've validated thier password",data[0]);
-                done(null,data[0]);
-
-            //VALIDATE PASSOWRD 
-                //   if (!user) {
-    //     return done(null, false, { message: 'Incorrect username.' });
-    //   }
-    //   if (!user.validPassword(password)) {
-    //     return done(null, false, { message: 'Incorrect password.' });
-    //   }
-    //   return done(null, user);
             }
-        })
+
+            // Define our user to return if password is validated as correct
+            var user = data[0];
+
+            //User exists - Validate password
+            // Get password hash for user
+            query.getUserPasswordHash(client,{email: email},(error,data) => {
+                // Check for error
+                if (error) {
+                    console.log(`local - Faled to get password hash for user email ${email}`,error);
+                    return done(error);
+                } 
+
+                var hash = data[0].password_hash;
+                bcrypt.compare(password, hash, function(err, res) {
+                    if (res === true) {
+                        //Password correct
+                        console.log(`local - user ${email} and password ${password} provided - CORRECT (LOGIN SUCCESSFULL).`);
+                        return done(null, user);
+                    } else {
+                        //Password incorrect
+                        console.log(`local - user ${email} exists but password ${password} is incorrect.`);
+                        return done(null, false, { message: 'Incorrect password.' });
+                    }
+                });
+            });
+        });
     }
 ));
 
@@ -232,15 +246,12 @@ app.get('/items/:id', (request,response) => {
     query.getItem(client,request.params.id,(error,result) => {
         if (error) {
             return response.status(400).send(error);
-        }
-        if (request.accepts('html')){
+        } else if (request.accepts('html')) {
             response.render('item_page',results[0]);
-        }
-        else if (request.accepts('application/json')) {
+        } else if (request.accepts('application/json')) {
             response.json(results);
-        }
-        else{
-            respone.accepts()
+        } else {
+            respone.accepts();
             return response.status(400);
         }
     });
@@ -303,15 +314,25 @@ app.delete('/basket/:id', function(request, response){
 
 // Add new local user account based on email and password
 app.post('/user', function(request, response){
+    // Need to validate inputs first.
 
-    //Need to hash password and update body.password before passing to insert query
-    request.body.password_hash = request.body.password;                                                 //TODO
+    // Hash password then create new account
+    bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(request.body.password, salt, function(err, hash) {
+            // Store hash in your password DB.
+            var details = {
+                email: request.body.email,
+                displayName: request.body.displayName,
+                password_hash: hash
+            };
 
-    query.createLocalUser(client,request.body,(error,results) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.json(results); 
+            query.createLocalUser(client,details,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+            }); 
+        });
     });
 });
 

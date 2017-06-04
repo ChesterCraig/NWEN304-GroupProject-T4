@@ -9,8 +9,10 @@ deleteItem
 
 getUsers
 getUser
-createUser
+createFaceBookUser
+createLocalUser
 deleteUser
+getUserPasswordHash
 
 createBasket
 deleteBasket
@@ -20,7 +22,7 @@ deleteBasketItem
 getBasketItems
 
 */
-
+``
 var q = {};
 
 
@@ -67,7 +69,7 @@ q.getItem = function(client,id,callback) {
 };
 
 q.createItem = function(client, details, callback) {
-    queryString = `INSERT INTO item (name, description, price, image_path) VALUES ('${details.name}','${details.description}',${details.price},'${details.image_path}') `;
+    var queryString = `INSERT INTO item (name, description, price, image_path) VALUES ('${details.name}','${details.description}',${details.price},'${details.image_path}') `;
     queryString = queryString + `RETURNING id, name, description, price, image_path`;
     var query = client.query(queryString);
     var results = [];
@@ -148,6 +150,35 @@ q.getUser = function (client,details,callback) {
     });
 };
 
+q.getUserPasswordHash = function (client,details,callback) {
+    if (details.id) {
+        var query = client.query(`SELECT id, password_hash FROM USER_ACCOUNT WHERE id = ${details.id}`);
+    } else if (details.facebook_id) {
+        var query = client.query(`SELECT id, password_hash FROM USER_ACCOUNT WHERE facebook_id = '${details.facebook_id}'`);
+    } else if (details.email) {
+        var query = client.query(`SELECT id, password_hash FROM USER_ACCOUNT WHERE email = '${details.email}'`);
+    } else {
+        callback("Invalid, no ID provided");
+    }
+
+    var results = [];
+
+    //Handle error
+    query.on('error', (error) => {
+        callback(error,null);
+    });
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
 // Create User
 q.createFaceBookUser = function (client,details,callback) {
     var query = client.query(`INSERT INTO USER_ACCOUNT (facebook_id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`);
@@ -170,7 +201,9 @@ q.createFaceBookUser = function (client,details,callback) {
 };
 
 q.createLocalUser = function (client,details,callback) {
-    var query = client.query(`INSERT INTO USER_ACCOUNT (email,password_hash,display_name) VALUES ('${details.email}',${details.password_hash},'${details.displayName}') RETURNING id, email, display_name`);
+    var queryString = `INSERT INTO USER_ACCOUNT (email,password_hash,display_name) VALUES ('${details.email}','${details.password_hash}','${details.displayName}') `;
+    queryString = queryString + `RETURNING id, email, display_name`;
+    var query = client.query(queryString);
     var results = [];
 
     //Handle error
