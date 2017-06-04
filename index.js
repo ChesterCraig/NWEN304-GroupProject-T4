@@ -1,31 +1,32 @@
-//Import Modules
+// Import Modules (npm)
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require("body-parser");
-const {client} = require("./Database/pg");
 var passport = require('passport')
 var FacebookStrategy = require('passport-facebook').Strategy;
 var LocalStrategy = require('passport-local').Strategy;
-const query = require("./Database/queries");
-var initialItems = require("./put_items");
-
 var path = require('path');
-var routes = require('./routes/index');
 
-//create express app
+// Import Modules (local)
+var routes = require('./routes/index');
+var initialItems = require("./put_items");
+const query = require("./Database/queries");
+const {client} = require("./Database/pg");
+
+// Create express app
 var app = express();
 
 
-// setup pug/jade view engine
+// Setup pug/jade view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Define all our middleware
 app.use(express.static(__dirname + "/Public")); // Serves anything up in public folder
 app.use(bodyParser.json()); // Gives us req.body elements parsed from clients http request
+app.use(bodyParser.urlencoded({ extended: false })); // Parses form data into body (required for local login)
 
-
-//======== PASSPORT AUTHORISATION STUFF ================================
+//======== PASSPORT AUTHORISATION STUFF (local + Facebook)================================
 
 // Get OAuth config from heroku Config variables if present else config file.
 if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
@@ -47,24 +48,27 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Setup local (email/password) authentication
-passport.use(new LocalStrategy(
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  },
     function(email, password, done) {
+        console.log(`local login attempt - email${email}, password:${password}`);
+
         query.getUser(client,{email: email},(error,data) => {
+            console.log(`local - Did we find the user in the database under email ${email}?`,data);
+            if (error) {
+                console.log("local - No, error occured",error);
+                return done(error);
 
-        console.log("local - User connected, add to db if new:",user);
-        console.log("local - Did we find the user in the database?",user);
-        if (error) {
-            console.log("local - No, error occured",error);
-            return done(error);
-
-        } else if (data.length != 1) {
-                        //User doesn't exist, create
-            console.log("local - No, user does not exists");
-            done(null,false,{message: `User '${email}' doesn't exits.`});
-        } else {
-            //User exists
-            console.log("local - Yes, user already exists (Pretend we've validated thier password",data[0]);
-            done(null,data[0]);
+            } else if (data.length != 1) {
+                            //User doesn't exist, create
+                console.log("local - No, user does not exists");
+                done(null,false,{message: `User '${email}' doesn't exits.`});
+            } else {
+                //User exists
+                console.log("local - Yes, user already exists (Pretend we've validated thier password",data[0]);
+                done(null,data[0]);
 
             //VALIDATE PASSOWRD 
                 //   if (!user) {
@@ -74,13 +78,13 @@ passport.use(new LocalStrategy(
     //     return done(null, false, { message: 'Incorrect password.' });
     //   }
     //   return done(null, user);
+            }
+        })
+    }
+));
 
-        }
-    })
-}));
 
-
-// Setup Passport Facebook OAuth
+//Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
     var user = {facebook_id: profile.id, displayName: profile.displayName};
@@ -123,7 +127,7 @@ passport.deserializeUser(function(id, done) {
     query.getUser(client,{id: id},(error,data) => {
         if (error) {
             console.log("Failed to deserialized user:",error);
-            done(error,user);
+            done(error);
         } else {
             console.log("Deserialized user:",data[0]);
             done(null,data[0]);
@@ -141,13 +145,11 @@ app.get('/auth/facebook/callback',
   passport.authenticate('facebook', {successRedirect: '/',
                                      failureRedirect: '/login' }));
 
-
-
-
-// Local login - not yet full supported
-app.post('/auth/local', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }));
-
-
+//Post to login via email/password
+app.post('/login',
+  passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/login'})
+);
 
 // Failed login page
 app.get('/login',(request,response) => {

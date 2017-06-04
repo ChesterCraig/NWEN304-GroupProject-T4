@@ -121,11 +121,11 @@ q.getUsers = function (client, callback) {
 // Get User (supports id, facebook_id or email)
 q.getUser = function (client,details,callback) {
     if (details.id) {
-        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE id = ${details.facebook_id}`);
+        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE id = ${details.id}`);
     } else if (details.facebook_id) {
-        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE facebook_id = ${details.facebook_id}`);
+        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE facebook_id = '${details.facebook_id}'`);
     } else if (details.email) {
-        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE email = ${details.email}`);
+        var query = client.query(`SELECT id, email, facebook_id, display_name, is_admin FROM USER_ACCOUNT WHERE email = '${details.email}'`);
     } else {
         callback("Invalid, no ID provided");
     }
