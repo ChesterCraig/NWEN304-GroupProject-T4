@@ -104,27 +104,29 @@ passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, 
    // Here we do something with the new user.. likely add to our database
     var user = {facebook_id: profile.id, displayName: profile.displayName};
     console.log("fb - User connected, add to db if new:",user);
-    console.log("fb - Did we find the user in the database?",user);
-    if (error) {
-        console.log("fb - No, error occured",error);
-        return done(error);
-    } else if (data.length == 1) {
-        //User exists
-        console.log("fb - Yes, user already exists",data[0]);
-        done(null,data[0]);
-    } else { 
-        //User doesn't exist, create
-        console.log("fb - No, user does not exists -> Create it.");
-        query.createFaceBookUser(client,user,(error,data) => {
-            if (error) {
-                console.log("fb - Failed to create user record");
-                done(error,null);
-            } else {
-                console.log("fb - Succesfully created user record:",data[0]);
-                done(null,data[0]);
-            }
-        });
-    }
+    query.getUser(client,user.id,(error,data) => {
+        console.log("fb - Did we find the user in the database?");
+        if (error) {
+            console.log("fb - No, error occured",error);
+            return done(error);
+        } else if (data.length == 1) {
+            //User exists
+            console.log("fb - Yes, user already exists",data[0]);
+            done(null,data[0]);
+        } else { 
+            //User doesn't exist, create
+            console.log("fb - No, user does not exists -> Create it.");
+            query.createFaceBookUser(client,user,(error,data) => {
+                if (error) {
+                    console.log("fb - Failed to create user record");
+                    done(error,null);
+                } else {
+                    console.log("fb - Succesfully created user record:",data[0]);
+                    done(null,data[0]);
+                }
+            });
+        }
+    });
 }));
 
 //Support for sessions
