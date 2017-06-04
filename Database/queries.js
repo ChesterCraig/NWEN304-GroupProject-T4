@@ -149,9 +149,28 @@ q.getUser = function (client,details,callback) {
 };
 
 // Create User
-q.createUser = function (client,details,callback) {
-    if (details.facebook_id)
+q.createFaceBookUser = function (client,details,callback) {
     var query = client.query(`INSERT INTO USER_ACCOUNT (facebook_id, display_name) VALUES (${details.id},'${details.displayName}') RETURNING id, display_name`);
+    var results = [];
+
+    //Handle error
+    query.on('error', (error) => {
+        callback(error,null);
+    });
+
+    //Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
+q.createLocalUser = function (client,details,callback) {
+    var query = client.query(`INSERT INTO USER_ACCOUNT (email,password_hash,display_name) VALUES ('${details.email}',${details.password_hash},'${details.displayName}') RETURNING id, email, display_name`);
     var results = [];
 
     //Handle error
@@ -173,7 +192,6 @@ q.createUser = function (client,details,callback) {
 // Delete User
 q.deleteUser = function (client,id,callback) {
     // Cascading delete defined in schema will result in all basketes and basket items relating to this user being removed too
-    console.log(`DELETE FROM USER_ACCOUNT WHERE id = '${id}'`);
     client.query(`DELETE FROM USER_ACCOUNT WHERE id = '${id}'`, function(error) {
         callback(error);
     });

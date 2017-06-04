@@ -100,7 +100,7 @@ passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, 
     } else { 
         //User doesn't exist, create
         console.log("fb - No, user does not exists -> Create it.");
-        query.createUser(client,user,(error,data) => {
+        query.createFaceBookUser(client,user,(error,data) => {
             if (error) {
                 console.log("fb - Failed to create user record");
                 done(error,null);
@@ -299,15 +299,32 @@ app.delete('/basket/:id', function(request, response){
 });
 
 //-------- USER ACCOUNTS -----------
+
+// Add new local user account based on email and password
+app.post('/user', function(request, response){
+
+    //Need to hash password and update body.password before passing to insert query
+    request.body.password_hash = request.body.password;                                                 //TODO
+
+    query.createLocalUser(client,request.body,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        response.json(results); 
+    });
+});
+
+// Get all users
 app.get('/users', (request,response) => {
     query.getUsers(client,(error,results) => {
         if (error) {
-            return response.status(400).send(error);
+            return response.status(400);//.send(error);
         }
         response.json(results);
     });
 });
 
+// Get a user based on id. ID must be user_accounts.id
 app.get('/users/:id', (request,response) => {
     query.getUser(client,{id: request.params.id},(error,results) => {
         if (error) {
