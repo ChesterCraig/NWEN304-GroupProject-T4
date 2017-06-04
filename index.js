@@ -290,7 +290,7 @@ app.delete('/items/:id', function(request, response){
 // - Remove all items from my (current users) basket
 
 // Get all items in every basket (admin only)
-app.get('/basketitems', function(request, response){
+app.get('/allbasketitems', function(request, response){
     if (request.user.is_admin === true) {
         query.getAllBasketItems(client,(error,results) => {
             if (error) {
