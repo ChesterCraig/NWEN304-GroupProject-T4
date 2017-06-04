@@ -103,6 +103,8 @@ passport.use(new LocalStrategy({
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
     var user = {facebook_id: profile.id, displayName: profile.displayName};
+    console.log('fb - profile',profile); //print profile object to see what data we get on the user now we have extended scope to include public profile
+
     console.log("fb - User connected, add to db if new:",user);
     query.getUser(client,user,(error,data) => {
         console.log("fb - Did we find the user in the database?");
@@ -153,7 +155,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 // Redirect the user to Facebook for authentication.  When complete, Facebook will redirect the user to /auth/facebook/callback
-app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook', passport.authenticate('facebook', {scope: 'public_profile'}));
 
 // Facebook will redirect the user to this URL after approval.  
 //Finish the authentication process by attempting to obtain an access token.  
