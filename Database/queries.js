@@ -22,9 +22,8 @@ deleteBasketItem
 getBasketItems
 
 */
-``
-var q = {};
 
+var q = {};
 
 //========== ITEMS ========================
 
