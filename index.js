@@ -281,36 +281,152 @@ app.delete('/items/:id', function(request, response){
 
 
 //-------- BASKET ITEMS -----------
+// JSON data must include user_account_id if actioning something on thier cart. If admin, can action any item from any cart.
+// - Get all items in every basket (admin only)
+// - Get all items in my (current users) basket
+// - Add item to my (current users) basket
+// - Update qty of an item in my (current users) basket
+// - Remove item from basket
+// - Remove all items from my (current users) basket
 
-// get all items in a basket
+// Get all items in every basket (admin only)
 app.get('/basketitems', function(request, response){
-    query.getBasketItems(client,(error,results) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.json(results); 
-    });
+    if (request.user.is_admin === true) {
+        query.getAllBasketItems(client,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else {
+        response.status(401).send('This action is restricted to admins');
+    }
 });
 
-// Add item to baset (user must be logged in to do this)
-app.post('/basketitem', function(request, response){
-    query.createBasketItem(client,request.body.basketItem,(error,results) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.json(results); 
-    });
+
+// Get all items in my (current users) basket
+app.get('/basketitems', (request, response) => {
+    if (request.user.is_admin === true) {
+        // Admin may specify any user id
+        query.getBasketItems(client,request.body.user_account_id,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else if (request.user)  {
+        // Get items from basket of requestor
+        query.getBasketItems(client,request.user.id,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else {
+        response.status(401).send('You must be logged in to perform this action.');
+    }
 });
 
-// Remove item from basket 
-app.delete('/basket/:id', function(request, response){
-    query.deleteBasketItem(client,request.params.id,(error) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.status(200).send(); 
-    });
+// Add item to my (current users) basket
+app.post('/basketitem', (request, response) => {
+   if (request.user.is_admin === true) {
+        // Admin may specify any user id
+        query.createBasketItem(client,request.body,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else if (request.user)  {
+        // Add item to basket of requestor
+        requst.body.user_account_id = request.user.id;
+
+        query.createBasketItem(client,request.body,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else {
+        response.status(401).send('You must be logged in to perform this action.');
+    }
 });
+
+
+// Update qty of an item in my (current users) basket
+app.post('/basketitem', (request,response) => {
+   if (request.user.is_admin === true) {
+        // Admin may specify any user id
+        query.updateBasketItem(client,request.body,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else if (request.user)  {
+        // Update item in basket of requestor only
+        requst.body.user_account_id = request.user.id;
+
+        query.updateBasketItem(client,request.body,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+            response.json(results); 
+        });
+    } else {
+        response.status(401).send('You must be logged in to perform this action.');
+    }
+});
+
+
+// Remove item from my (current users) basket
+app.delete('/basket', (request, response) => {
+    if (request.user.is_admin === true) {
+        // Admin may delete an item (just dont specify user_account_id param)
+        query.deleteBasketItem(client,request.body,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+                response.status(200).send(); 
+        });
+    } else if (request.user)  {
+        // Delete item in users account
+        requst.body.user_account_id = request.user.id;
+
+        query.deleteBasketItem(client,request.body,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+                response.status(200).send(); 
+        });
+    } else {
+        response.status(401).send('You must be logged in to perform this action.');
+    }
+});
+
+// Remove all items from my (current users) basket
+app.delete('/basket', (request, response) => {
+    if (request.user.is_admin === true) {
+        // Admin may delete items from any users basket (just specify user_account_id param)
+        query.deleteBasketItems(client,request.body.user_account_id,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+                response.status(200).send(); 
+        });
+    } else if (request.user)  {
+        // Delete item in users account
+        query.deleteBasketItems(client,request.user.id,(error,results) => {
+            if (error) {
+                return response.status(400).send(error);
+            }
+                response.status(200).send(); 
+        });
+    } else {
+        response.status(401).send('You must be logged in to perform this action.');
+    }
+});
+
 
 //-------- USER ACCOUNTS -----------
 
