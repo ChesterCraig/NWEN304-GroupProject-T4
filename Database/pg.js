@@ -33,7 +33,10 @@ client.initSchema = function (callback) {
 
     // Setup USER_ACCOUNTS
     qry = qry + "CREATE TABLE IF NOT EXISTS USER_ACCOUNT (";
-    qry = qry + "id VARCHAR(255) primary key,";     //Ideally should be big int but id of 1384043198297657 is out of range
+    qry = qry + "id serial primary key,";
+    qry = qry + "email VARCHAR(255) UNIQUE,";
+    qry = qry + "password_hash VARCHAR(255),";
+    qry = qry + "facebook_id VARCHAR(255) UNIQUE,";     //Ideally should be big int but id of 1384043198297657 is out of range
     qry = qry + "display_name VARCHAR(255),";
     qry = qry + "is_admin boolean DEFAULT 'F'";
     qry = qry + ");";
@@ -41,16 +44,10 @@ client.initSchema = function (callback) {
     // Setup USER_ACTIVITY - Pending, this table will track user activity.
 
 
-    // Setup BASKET
-    qry = qry + "CREATE TABLE IF NOT EXISTS BASKET (";
-    qry = qry + "id serial primary key,";
-    qry = qry + "user_account VARCHAR(255) REFERENCES user_account ON DELETE CASCADE";       //FK to user
-    qry = qry + ");";
-
     // Setup BASKET_ITEM
     qry = qry + "CREATE TABLE IF NOT EXISTS BASKET_ITEM (";
     qry = qry + "id serial primary key,";
-    qry = qry + "basket int REFERENCES basket ON DELETE CASCADE,";                  //FK to basket
+    qry = qry + "user_account int REFERENCES user_account ON DELETE CASCADE,";       //FK to user
     qry = qry + "item int REFERENCES item ON DELETE CASCADE,";                      //FK to item
     qry = qry + "quantity int";
     qry = qry + ");";
