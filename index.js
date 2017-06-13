@@ -199,6 +199,21 @@ app.get('/cart', function(req, res, next) {
   res.render('cart');
 });
 
+// Mens page
+app.get('/men', function(req, res, next) {
+    res.render('men');
+});
+
+// Womens page
+app.get('/women', function(req, res, next) {
+    res.render('women');
+});
+
+// Example womens page
+app.get('/accessories', function(req, res, next) {
+    res.render('accessories');
+});
+
 // Test page for who is logged in 
 app.get('/check', function(req, res) {
     if (req.user) {
