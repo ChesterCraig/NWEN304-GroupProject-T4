@@ -1,4 +1,5 @@
 /Config/dbConfig.js
 /Config/fbConfig.js
+.idea/
 node_modules/
 npm-debug.log
