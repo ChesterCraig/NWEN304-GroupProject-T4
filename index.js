@@ -170,6 +170,7 @@ app.post('/login',
                                    failureRedirect: '/login'})
 );
 
+
 // Failed login page
 app.get('/login',(request,response) => {
     response.send('You failed to login<br><a href="/">--Go Home--</a>');
@@ -450,7 +451,7 @@ app.delete('/basket', (request, response) => {
 // Add new local user account based on email and password
 app.post('/user', function(request, response){
     // Need to validate inputs first.
-
+    console.log(request.body);
     // Hash password then create new account
     bcrypt.genSalt(10, function(err, salt) {
         bcrypt.hash(request.body.password, salt, function(err, hash) {

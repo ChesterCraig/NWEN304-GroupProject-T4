@@ -1,20 +1,67 @@
 nav( role="navigation", class=["navbar", "navbar-inverse"] )
-    .navbar-header
-        button.navbar-toggle.collapsed( type="button", data-toggle="collapse", data-target="#dropdown_menu", aria-expanded="false", aria-controls="navbar")
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
-        a.navbar-brand(href="/") Hipster Clothing co.
+	.navbar-header
+		button.navbar-toggle.collapsed( type="button", data-toggle="collapse", data-target="#dropdown_menu", aria-expanded="false", aria-controls="navbar")
+			span.sr-only Toggle navigation
+			span.icon-bar
+			span.icon-bar
+			span.icon-bar
+		a.navbar-brand(href="/") Hipster Clothing co.
 
-    #dropdown_menu.collapse.navbar-collapse
-        ul.nav.navbar-nav
-            +nav_item("/men") Men
-            +nav_item("/women") Women
-            +nav_item("/accessories") Accessories
-            //- +navbar("Hipster Clothing co.","dropdown_menu", "inverse")
-            //-+nav_item("/","active") Home
-        ul.nav.navbar-nav.navbar-right
-            +nav_item("/auth/facebook","login") Login
-            +nav_item("/Cart") Cart
-                span.glyphicon.glyphicon-shopping-cart
+	#dropdown_menu.collapse.navbar-collapse
+		ul.nav.navbar-nav
+			+nav_item("/men") Men
+			+nav_item("/women") Women
+			+nav_item("/accessories") Accessories
+			//- +navbar("Hipster Clothing co.","dropdown_menu", "inverse")
+			//-+nav_item("/","active") Home
+		ul.nav.navbar-nav.navbar-right
+			li
+				#loginDropdown.button.btn.btn-default.navbar-btn(type='button', data-toggle='modal', data-target='#loginModal') Login
+			li
+				a#cart(href="/Cart") Cart 
+					span.glyphicon.glyphicon-shopping-cart
+
+	#loginModal.modal.fade(role='dialog')
+					.modal-dialog
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal') ×
+								h3.modal-title Login With
+							.modal-body
+								.div
+									button.btn.btn-lg.btn-primary.btn-block(type='facebook') Facebook
+								h4 Or
+								form.form#loginForm(method="POST",action="/login")
+									//-label.sr-only(for='inputEmail') Email address
+									input.form-control(name="email",type='email', placeholder='Email address', required='', autofocus='')
+									br
+									//-label.sr-only(for='inputPassword') Password
+									input.form-control(name="password",type='password', placeholder='Password', required='')
+									//- .checkbox
+									//- 	label
+									//- 		input(type='checkbox', value='remember-me')
+									//- 		|  Remember me
+									br
+									button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+								br  
+								a(data-toggle='modal', data-target='#registerModal')
+									button.btn.btn-lg.btn-primary.btn-block(type='button' data-toggle='modal', data-target='#loginModal') Register
+										
+	#registerModal.modal.fade(role='dialog')
+					.modal-dialog
+						.modal-content
+							.modal-header
+								button.close(type='button', data-dismiss='modal') ×
+								h3.modal-title Register
+							.modal-body
+								form.form-signin#registerForm
+									//-label.sr-only(for='displayName') Name
+									input.form-control(name='displayName',type='text', placeholder='Name', required='', autofocus='')
+									br
+									//-label.sr-only(for='email') Email address
+									input.form-control(name='email',type='email', placeholder='Email address', required='', autofocus='')
+									br
+									//-label.sr-only(for='password') Password
+									input.form-control(name='password',type='password', placeholder='Password', required='')
+									br
+									button#register.btn.btn-lg.btn-primary.btn-block(type='submit') Register

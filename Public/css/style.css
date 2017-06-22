@@ -33,3 +33,5 @@ p {
     border-radius: 5px;
     text-align: center;
 }
+
+.dropdown-menu.login { min-width: 300px }
