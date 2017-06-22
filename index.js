@@ -277,16 +277,6 @@ app.get('/items/:id', (request,response) => {
     });
 });
 
-// Create a new item
-app.post('/items', function(request, response){
-    query.createItem(client,request.body.item,(error,results) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.json(results); 
-    });
-});
-
 // Delete item
 app.delete('/items/:id', function(request, response){
     query.deleteItem(client,request.params.id,(error) => {
