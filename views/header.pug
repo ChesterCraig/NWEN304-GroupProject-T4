@@ -16,10 +16,15 @@ nav( role="navigation", class=["navbar", "navbar-inverse"] )
 			//-+nav_item("/","active") Home
 		ul.nav.navbar-nav.navbar-right
 			li
-				#loginDropdown.button.btn.btn-default.navbar-btn(type='button', data-toggle='modal', data-target='#loginModal') Login
+				p.navbar-text#welcome(style="font-size:100%", hidden)
+			li
+				a#loginDropdown(type='button', data-toggle='modal', data-target='#loginModal') Login   
+					
 			li
 				a#cart(href="/Cart") Cart 
 					span.glyphicon.glyphicon-shopping-cart
+			li
+				a#logout(href="/logout") Logout
 
 	#loginModal.modal.fade(role='dialog')
 					.modal-dialog
@@ -29,7 +34,8 @@ nav( role="navigation", class=["navbar", "navbar-inverse"] )
 								h3.modal-title Login With
 							.modal-body
 								.div
-									button.btn.btn-lg.btn-primary.btn-block(type='facebook') Facebook
+									a(href="/auth/facebook")
+										button.btn.btn-lg.btn-primary.btn-block(type='facebook') Facebook
 								h4 Or
 								form.form#loginForm(method="POST",action="/login")
 									//-label.sr-only(for='inputEmail') Email address

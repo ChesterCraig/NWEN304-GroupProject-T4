@@ -2,6 +2,7 @@ const baseUrl = window.location.origin; //"http://localhost:8080";
 var userID;
 $(document).ready(function(e) {
     $('#cart').hide();
+    $('#logout').hide();
     getUser();
 
     $('#registerForm').submit(function(event){
@@ -37,7 +38,9 @@ function getUser(){
 function userExsists(data){
     $('.login').find("a").text("Logout").attr("href","/logout");
     $('#loginDropdown').hide();
+    $('#welcome').text('Welcome '+data.display_name).show();
     $('#cart').show();
+    $('#logout').show();
 };
 
 function register(data){
