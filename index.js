@@ -347,7 +347,7 @@ app.post('/basketitem', (request, response) => {
         });
     } else if (request.user)  {
         // Add item to basket of requestor
-        requst.body.user_account_id = request.user.id;
+        request.body.user_account_id = request.user.id;
 
         query.createBasketItem(client,request.body,(error,results) => {
             if (error) {

@@ -1,8 +1,10 @@
 const baseUrl = window.location.origin; //"http://localhost:8080";
-var userID;
+var user;
 $(document).ready(function(e) {
+    //hide buttons for loggedin users
     $('#cart').hide();
     $('#logout').hide();
+    //
     getUser();
 
     $('#registerForm').submit(function(event){
@@ -36,6 +38,8 @@ function getUser(){
 };
 
 function userExsists(data){
+    user = data;
+    // show logout button and welcome message
     $('.login').find("a").text("Logout").attr("href","/logout");
     $('#loginDropdown').hide();
     $('#welcome').text('Welcome '+data.display_name).show();
@@ -52,6 +56,16 @@ function register(data){
         dataType: "json"
     }).then(ajaxSuccess,ajaxFail);
 };
+
+function getItemDetails(id,callback){
+    $.ajax({
+        method: 'GET',
+        url: baseUrl +"/items/"+id,
+        contentType: "application/json",
+        //dataType: "application/json",
+        headers: {Accept: "application/json"}
+    }).then(callback,ajaxFail);
+};
 // function login(data){
 //     $.ajax({
 //         method: 'POST',
@@ -66,7 +80,7 @@ function register(data){
 function ajaxSuccess(data) {
     console.log("Recieved data back from server for our ajax call",data);
 };
-;
+
 function ajaxFail(data) {
 	console.log('AJAX request failed: ', data);
 };

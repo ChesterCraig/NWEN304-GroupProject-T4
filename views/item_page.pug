@@ -22,11 +22,15 @@ block body
 						| #{name}. 
 					h3 #{description}.
 					h4 $ #{price}
-					+btn("Add To Cart")
+					button.btn.btn-default#addtocart Add To Cart
+					script var itemId = #{id}
 			hr.featurette-divider
 		
 		include footer
-
-
+block scripts
+	script(src="/js/jquery.min.js")
+	script(src="/js/bootstrap.min.js")
+	script(src="/js/home.js")
+	script(src="/js/items.js")
 
 
