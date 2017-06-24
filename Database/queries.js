@@ -201,8 +201,15 @@ q.createFaceBookUser = function (client,details,callback) {
 };
 
 q.createLocalUser = function (client,details,callback) {
-    var queryString = `INSERT INTO USER_ACCOUNT (email,password_hash,display_name) VALUES ('${details.email}','${details.password_hash}','${details.displayName}') `;
-    queryString = queryString + `RETURNING id, email, display_name`;
+    if (details.isAdmin == true) {
+        var queryString = `INSERT INTO USER_ACCOUNT (email,password_hash,display_name,is_admin) `;
+        queryString = queryString + `VALUES ('${details.email}','${details.password_hash}','${details.displayName}','TRUE') `;
+        queryString = queryString + `RETURNING id, email, display_name`;
+    } else {
+        var queryString = `INSERT INTO USER_ACCOUNT (email,password_hash,display_name) VALUES ('${details.email}','${details.password_hash}','${details.displayName}') `;
+        queryString = queryString + `RETURNING id, email, display_name`;
+    }
+
     var query = client.query(queryString);
     var results = [];
 

@@ -17,7 +17,6 @@ const {client} = require("./Database/pg");
 // Create express app
 var app = express();
 
-
 // Setup pug/jade view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -440,8 +439,20 @@ app.delete('/basket', (request, response) => {
 
 // Add new local user account based on email and password
 app.post('/user', function(request, response){
-    // Need to validate inputs first.
+    // Need to validate inputs first.  <--- TODO
     console.log(request.body);
+
+    // If user provided optional correct admin secret value then the accounts created is set as is_admin = true. Secret set via Heroku
+    var isAdmin = false;
+    if (request.body.adminSecret) {
+        if (request.body.adminSecret == "SuperSecret") {
+        //if (request.body.adminSecret == process.env.ADMIN_SECRET) {
+            isAdmin = true;
+        } else {
+            return response.status(401).send('Incorrect admin secret. Cannot create admin account.');
+        }
+    }
+
     // Hash password then create new account
     bcrypt.genSalt(10, function(err, salt) {
         bcrypt.hash(request.body.password, salt, function(err, hash) {
@@ -449,7 +460,8 @@ app.post('/user', function(request, response){
             var details = {
                 email: request.body.email,
                 displayName: request.body.displayName,
-                password_hash: hash
+                password_hash: hash,
+                isAdmin
             };
 
             query.createLocalUser(client,details,(error,results) => {
