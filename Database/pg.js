@@ -26,6 +26,7 @@ client.initSchema = function (callback) {
     var qry = "CREATE TABLE IF NOT EXISTS ITEM (";
     qry = qry + "id serial primary key,";
     qry = qry + "name VARCHAR(255),";
+    qry = qry + "gender VARCHAR(8),";
     qry = qry + "description VARCHAR(255),";
     qry = qry + "price REAL,";
     qry = qry + "image_path VARCHAR(255)";

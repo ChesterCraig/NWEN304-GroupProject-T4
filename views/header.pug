@@ -18,13 +18,13 @@ nav( role="navigation", class=["navbar", "navbar-inverse"] )
 			li
 				p.navbar-text#welcome(style="font-size:100%", hidden)
 			li
-				a#loginDropdown(type='button', data-toggle='modal', data-target='#loginModal') Login   
-					
+				a#loginDropdown(type='button', data-toggle='modal', data-target='#loginModal') Login
 			li
-				a#cart(href="/Cart") Cart 
+				a#cart(href="/cart") Cart
 					span.glyphicon.glyphicon-shopping-cart
 			li
 				a#logout(href="/logout") Logout
+
 
 	#loginModal.modal.fade(role='dialog')
 					.modal-dialog

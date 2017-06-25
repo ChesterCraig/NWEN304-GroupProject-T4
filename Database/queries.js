@@ -4,6 +4,7 @@
 /*
 getItems
 getItem
+getMaleItems
 createItem
 deleteItem
 
@@ -29,7 +30,7 @@ module.exports = q;
 //========== ITEMS ========================
 
 q.getItems = function(client,callback) {
-    var query = client.query('select id, name, description, price, image_path from ITEM');
+    var query = client.query('select id, name, gender, description, price, image_path from ITEM');
     var results = [];
 
     // Handle error
@@ -49,7 +50,7 @@ q.getItems = function(client,callback) {
 };
 
 q.getItem = function(client,id,callback) {
-    var query = client.query(`select id, name, description, price, image_path from ITEM where id = ${id}`);
+    var query = client.query(`select id, name, gender, description, price, image_path from ITEM where id = ${id}`);
     results = [];
 
     // Handle error
@@ -69,8 +70,50 @@ q.getItem = function(client,id,callback) {
 };
 
 q.createItem = function(client, details, callback) {
-    var queryString = `INSERT INTO item (name, description, price, image_path) VALUES ('${details.name}','${details.description}',${details.price},'${details.image_path}') `;
-    queryString = queryString + `RETURNING id, name, description, price, image_path`;
+    var queryString = `INSERT INTO item (name, gender, description, price, image_path) VALUES ('${details.name}', '${details.gender}','${details.description}',${details.price},'${details.image_path}') `;
+    queryString = queryString + `RETURNING id, name, gender, description, price, image_path`;
+    var query = client.query(queryString);
+    var results = [];
+
+    // Handle error
+    query.on('error', (error) => {
+        return callback(error,null);
+    });
+
+    // Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
+q.getMaleItems = function (client, callback) {
+    var queryString = `select * from ITEM where gender = 'Male'`;
+    var query = client.query(queryString);
+    var results = [];
+
+    // Handle error
+    query.on('error', (error) => {
+        return callback(error,null);
+    });
+
+    // Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
+q.getFemaleItems = function (client, callback) {
+    var queryString = `select * from ITEM where gender = 'Female'`;
     var query = client.query(queryString);
     var results = [];
 

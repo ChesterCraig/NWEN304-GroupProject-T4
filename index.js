@@ -201,12 +201,29 @@ app.get('/cart', function(req, res, next) {
 
 // Mens page
 app.get('/men', function(req, res, next) {
-    res.render('men');
+    query.getMaleItems(client,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        res.render('men', {
+            data: results
+        });
+        //response.json(results);
+    });
+
 });
 
 // Womens page
 app.get('/women', function(req, res, next) {
-    res.render('women');
+    query.getFemaleItems(client,(error,results) => {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        res.render('women', {
+            data: results
+        });
+        //response.json(results);
+    });
 });
 
 // Example womens page
