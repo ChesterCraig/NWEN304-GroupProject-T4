@@ -37,6 +37,42 @@ function getUser(){
  }).then(userExsists, ajaxFail);
 };
 
+function handleKey(e){
+    if (e.keyCode == 13) {
+        search();
+    }
+}
+
+function search(){
+    $('#men').hide();
+    $('#women').hide();
+    input = document.getElementById('search');
+    filter = $('#search').val();
+
+    $.ajax({
+        method: 'POST',
+        url: baseUrl +"/itemsearch",
+        data: {name: filter},
+        success: function(data) {
+            renderItems(data);
+        },
+        error: function (request, status, error) {
+            alert(error);
+        }
+    });
+}
+
+function renderItems(data){
+    $('#searchItems').empty();
+    for(var i = 0; i<data.length; i++){
+        $('#searchItems').append('<h3>'+data[i].name+'</h3>');
+        $('#searchItems').append('<h6>'+data[i].description+'</h6>');
+        $('#searchItems').append('<img src="'+data[i].image_path+'"</img>');
+
+    }
+
+}
+
 function userExsists(data){
     user = data;
     // show logout button and welcome message

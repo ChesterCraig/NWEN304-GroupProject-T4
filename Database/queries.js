@@ -133,6 +133,29 @@ q.getFemaleItems = function (client, callback) {
     });
 };
 
+q.itemSearch = function (client, name, callback) {
+    console.log(name);
+    var name = name;
+    var queryString = `select * from item where name like '%`+name+`%';`;
+    var query = client.query(queryString);
+    var results = [];
+
+    // Handle error
+    query.on('error', (error) => {
+        return callback(error,null);
+    });
+
+    // Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        callback(null,results);
+    });
+};
+
 q.deleteItem = function(client, id, callback) {
     client.query(`DELETE FROM item WHERE id = ${id}`, function(error) {
         callback(error);

@@ -97,7 +97,6 @@ passport.use(new LocalStrategy({
     }
 ));
 
-
 //Setup Passport Facebook OAuth
 passport.use(new FacebookStrategy(FacebookStrategyConfig, function(accessToken, refreshToken, profile, done) {
    // Here we do something with the new user.. likely add to our database
@@ -186,7 +185,13 @@ app.get('/logout', function(req, res){
 //======== RENDERED HTML PAGES ================================
 // Home page.
 app.get('/', function(req, res, next) {
-  res.render('index', { title: 'Clothing Shop' });
+  res.render('index', { title: 'Clothing Shop', data: {
+      id: 12,
+      name: 'Yellow Shorts',
+      gender: 'Female',
+      description: 'Yellow T-Shirt - Writing',
+      price: 15,
+      image_path: '/images/tshirt2.jpg' }  });
 });
 
 // Example item should be retrieved from db
@@ -223,6 +228,21 @@ app.get('/women', function(req, res, next) {
             data: results
         });
         //response.json(results);
+    });
+});
+
+app.post('/itemsearch', function(req, res) {
+    //return;
+    var inputString = req.body.name;
+    query.itemSearch(client, inputString, (error,results) =>  {
+        if (error) {
+            return response.status(400).send(error);
+        }
+        console.log(results);
+        //res.render('index', {
+        //    data: results
+        //});
+        return res.status(200).send(results);
     });
 });
 

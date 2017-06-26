@@ -22,14 +22,19 @@ block body
                         {text:"Item 2",url:"/items/4"},
                         {text:"Item 3",url:"/items/5"},],0)
 
-            .col-md-6
+            .col-md-6#men
                 h3 Men
                 a(href='/men')
                     img(src='/images/mens1.jpg')
-            .col-md-6
+            .col-md-6#women
                 h3 Women
                 a(href='/women')
                     img(src='/images/womens1.jpg')
+
+            .col-md-6#searchItems
+
+    script
+        | console.log("Hello");
 
     include footer
 
