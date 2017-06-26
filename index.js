@@ -482,8 +482,7 @@ app.post('/user', function(request, response){
     // If user provided optional correct admin secret value then the accounts created is set as is_admin = true. Secret set via Heroku
     var isAdmin = false;
     if (request.body.adminSecret) {
-        if (request.body.adminSecret == "SuperSecret") {
-        //if (request.body.adminSecret == process.env.ADMIN_SECRET) {
+        if (request.body.adminSecret == (process.env.ADMIN_SECRET || "SuperSecret")) {
             isAdmin = true;
         } else {
             return response.status(401).send('Incorrect admin secret. Cannot create admin account.');
