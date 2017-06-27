@@ -325,7 +325,7 @@ app.delete('/items/:id', function(request, response){
 
 
 //-------- BASKET ITEMS -----------
-// JSON data must include user_account_id if actioning something on thier cart. If admin, can action any item from any cart.
+// JSON data must include user_account_id if actioning something on their cart. If admin, can action any item from any cart.
 // - Get all items in every basket (admin only)
 // - Get all items in my (current users) basket
 // - Add item to my (current users) basket

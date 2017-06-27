@@ -1,6 +1,0 @@
-{
-	"email": "pattyboy_07@hotmail.com",
-	"password": "abcdef",
-	"displayName": "Patrick",
-	"adminSecret": "SuperSecret"
-}

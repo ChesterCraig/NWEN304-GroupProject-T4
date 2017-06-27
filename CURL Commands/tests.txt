@@ -1,0 +1,17 @@
+*Note: Remove "| json_pp" if this causes an error 
+** Add -i to script to include headers
+
+Items:
+curl -X GET http://localhost:8080/items | json_pp
+
+Item with id 0:
+curl -H "Accept: application/json" -X GET http://localhost:8080/items/1 | json_pp
+
+Mens items:
+curl -X GET http://localhost:8080/men
+
+Womens items:
+curl -X GET http://localhost:8080/women
+
+
+

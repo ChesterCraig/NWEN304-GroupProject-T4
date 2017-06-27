@@ -5,6 +5,7 @@
 getItems
 getItem
 getMaleItems
+getFemaleItems
 createItem
 deleteItem
 
