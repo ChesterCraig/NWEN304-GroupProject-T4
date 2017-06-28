@@ -16,6 +16,8 @@ nav( role="navigation", class=["navbar", "navbar-inverse"] )
             //-+nav_item("/","active") Home
         ul.nav.navbar-nav.navbar-right
             li
+                input(type="text" id="search" onkeyup="return handleKey(event)" placeholder="Search for items...")
+            li
                 p.navbar-text#welcome(style="font-size:100%", hidden)
             li
                 a#loginDropdown(type='button', data-toggle='modal', data-target='#loginModal') Login
