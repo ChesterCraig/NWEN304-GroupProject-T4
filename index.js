@@ -9,7 +9,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 
 // Import Modules (local)
-const routes = require('./routes/index');
+//const routes = require('./routes/index');
 const initialItems = require("./put_items");
 const query = require("./Database/queries");
 const {client} = require("./Database/pg");
@@ -22,7 +22,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Define all our middleware
-app.use(express.static(__dirname + "/Public")); // Serves anything up in public folder
+var options = {maxAge: 86400000};
+app.use(express.static(__dirname + "/Public",options)); // Serves anything up in public folder
 app.use(bodyParser.json()); // Gives us req.body elements parsed from clients http request
 app.use(bodyParser.urlencoded({ extended: false })); // Parses form data into body (required for local login)
 
@@ -185,13 +186,7 @@ app.get('/logout', function(req, res){
 //======== RENDERED HTML PAGES ================================
 // Home page.
 app.get('/', function(req, res, next) {
-  res.render('index', { title: 'Clothing Shop', data: {
-      id: 12,
-      name: 'Yellow Shorts',
-      gender: 'Female',
-      description: 'Yellow T-Shirt - Writing',
-      price: 15,
-      image_path: '/images/tshirt2.jpg' }  });
+  res.render('index', { title: 'Clothing Shop'});
 });
 
 // Example item should be retrieved from db
@@ -199,9 +194,9 @@ var item = { title: 'shop',
             item_name:"generic item",
             item_description:"about item" }
 
-// Example cart page
+//cart page
 app.get('/cart', function(req, res, next) {
-  res.render('cart');
+  res.render('cart',{ title: 'Cart - Clothing Shop'});
 });
 
 // Mens page
@@ -211,6 +206,7 @@ app.get('/men', function(req, res, next) {
             return response.status(400).send(error);
         }
         res.render('men', {
+            title: 'men - Clothing Shop',
             data: results
         });
         //response.json(results);
@@ -225,6 +221,7 @@ app.get('/women', function(req, res, next) {
             return response.status(400).send(error);
         }
         res.render('women', {
+            title: 'women - Clothing Shop',
             data: results
         });
         //response.json(results);
@@ -248,7 +245,7 @@ app.post('/itemsearch', function(req, res) {
 
 // Example womens page
 app.get('/accessories', function(req, res, next) {
-    res.render('accessories');
+    res.render('accessories',{title: 'accessories - Clothing Shop'});
 });
 
 // Test page for who is logged in 
