@@ -72,13 +72,13 @@ client.populateItems = function(items){
             throw error;
         } else {
             if (result.rowCount < 1){
-                var queryString = "INSERT INTO item (name, description, price, image_path) VALUES";
+                var queryString = "INSERT INTO item (name, gender, description, price, image_path) VALUES";
                 for(i = 0; i < items.length; i++){
                     var item = items[i].item;
                     if (i > 0){
                         queryString += `,`
                     }
-                    queryString = queryString + `('${item.name}', '${item.description}', ${item.price} ,'${item.image_path}')`;
+                    queryString = queryString + `('${item.name}','${item.gender}','${item.description}', ${item.price} ,'${item.image_path}')`;
                 }
                 queryString = queryString;
                 client.query(queryString, function(error, result){
