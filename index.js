@@ -300,7 +300,7 @@ app.get('/items/:id', (request,response) => {
         if (error) {
             return response.status(400).send(error);
         } else if (request.accepts('html')) {
-            response.render('item_page',results[0]);
+            response.render('item_page',{title: "clothingShop",item: results[0]});
         } else if (request.accepts('application/json')) {
             response.json(results);
         } else {

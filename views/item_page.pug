@@ -5,28 +5,30 @@ block body
 			include header
 
 	.container
-		.col-md-3
-			p.lead Shop Name
-				+list-group-links([
-					{text:"Link 1",url:"/items/1"},
-					{text:"Link 2",url:"/items/2"},
-					{text:"Link 3",url:"/items/3"},],0)
-		
 		.col-md-9
 			hr.featurette-divider
 			.row.featurette
 				.col-md-5
-					img.featurette-image.img-responsive.center-block(src='..'+image_path)
+					img.featurette-image.img-responsive.center-block(src='..'+item.image_path)
 				.col-md-7
 					h2.featurette-heading
-						| #{name}. 
-					h3 #{description}.
-					h4 $ #{price}
-					button.btn.btn-default#addtocart Add To Cart
-					script var itemId = #{id}
+						| #{item.name}. 
+					h3 #{item.description}.
+					h4 $ #{item.price}
+					form#addtocart
+						.form-group.col-md-3
+							select.form-control#amount(name='amount')
+								option 1
+								option 2 
+								option 3 
+								option 4
+								option 5
+						.col-md-3
+							button.btn.btn-default(type='submit') Add To Cart
+					script var itemId = #{item.id}
 			hr.featurette-divider
 		
-		include footer
+	include footer
 block scripts
 	script(src="/js/jquery.min.js")
 	script(src="/js/bootstrap.min.js")

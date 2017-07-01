@@ -1,9 +1,18 @@
 $(document).ready(function(e) {
-    $("#addtocart").click(function(){
-        var data = {item: itemId,
-                    quantity:1};
-        addToCartItem(data)
-    });    
+    // $("#addtocart").click(function(){
+    //     var data = {item: itemId,
+    //                 quantity:1};
+    //     addToCartItem(data)
+    // });
+   $('#addtocart').submit(function(event) {
+    event.preventDefault();
+    var raw = $(this).serializeArray();
+    var data = {item: itemId,
+                quantity:raw[0].value};
+       
+    addToCartItem(data);
+}); 
+
 });
 
 function addToCartItem(data){
