@@ -11,7 +11,8 @@ block body
                 h2 Mens Clothing
 
                 each item in data
-                    h4 #{item.name}
+                    a(href = "items/"+item.id)
+                        h4 #{item.name}
                     h6 #{item.description}
                     img(src = "" + item.image_path)
 
