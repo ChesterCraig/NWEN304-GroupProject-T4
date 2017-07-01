@@ -372,7 +372,7 @@ app.get('/basketitems', (request, response) => {
 app.post('/basketitem', (request, response) => {
    if (request.user.is_admin === true) {
         // Admin may specify any user id
-        query.createBasketItem(client,request.body,(error,results) => {
+        query.addBasketItem(client,request.body,(error,results) => {
             if (error) {
                 return response.status(400).send(error);
             }
@@ -382,7 +382,7 @@ app.post('/basketitem', (request, response) => {
         // Add item to basket of requestor
         request.body.user_account_id = request.user.id;
 
-        query.createBasketItem(client,request.body,(error,results) => {
+        query.addBasketItem(client,request.body,(error,results) => {
             if (error) {
                 return response.status(400).send(error);
             }
@@ -395,7 +395,7 @@ app.post('/basketitem', (request, response) => {
 
 
 // Update qty of an item in my (current users) basket
-app.post('/basketitem', (request,response) => {
+app.put('/basketitem', (request,response) => {
    if (request.user.is_admin === true) {
         // Admin may specify any user id
         query.updateBasketItem(client,request.body,(error,results) => {
@@ -406,8 +406,8 @@ app.post('/basketitem', (request,response) => {
         });
     } else if (request.user)  {
         // Update item in basket of requestor only
-        requst.body.user_account_id = request.user.id;
-
+        request.body.user_account_id = request.user.id;
+        
         query.updateBasketItem(client,request.body,(error,results) => {
             if (error) {
                 return response.status(400).send(error);
@@ -421,7 +421,8 @@ app.post('/basketitem', (request,response) => {
 
 
 // Remove item from my (current users) basket
-app.delete('/basket', (request, response) => {
+app.delete('/basket/:id', (request, response) => {
+    request.body.id = request.params.id;
     if (request.user.is_admin === true) {
         // Admin may delete an item (just dont specify user_account_id param)
         query.deleteBasketItem(client,request.body,(error,results) => {
@@ -432,7 +433,7 @@ app.delete('/basket', (request, response) => {
         });
     } else if (request.user)  {
         // Delete item in users account
-        requst.body.user_account_id = request.user.id;
+        request.body.user_account_id = request.user.id;
 
         query.deleteBasketItem(client,request.body,(error,results) => {
             if (error) {

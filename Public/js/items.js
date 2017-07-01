@@ -7,8 +7,9 @@ $(document).ready(function(e) {
    $('#addtocart').submit(function(event) {
     event.preventDefault();
     var raw = $(this).serializeArray();
+    var quantity = parseInt(raw[0].value);
     var data = {item: itemId,
-                quantity:raw[0].value};
+                quantity: quantity };
        
     addToCartItem(data);
 }); 

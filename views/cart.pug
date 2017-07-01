@@ -15,6 +15,18 @@ block body
 						th Price
 				tbody#cartItems
 
+	.buttons(hidden)
+		.btn-group
+			button.up.btn.btn-xs.btn-default
+				span.glyphicon.glyphicon-chevron-up(style='vertical-align:middle')
+			button.count.btn.btn-xs.btn-default.disabled 0
+				
+			button.down.btn.btn-xs.btn-default
+				span.glyphicon.glyphicon-chevron-down(style='vertical-align:middle')
+			button.update.btn.btn-xs.btn-success
+				span.glyphicon.glyphicon-ok(style='vertical-align:middle')
+			button.remove.btn.btn-xs.btn-danger
+				span.glyphicon.glyphicon-remove(style='vertical-align:middle')
 
 	include footer
 

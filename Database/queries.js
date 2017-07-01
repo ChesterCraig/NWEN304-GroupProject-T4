@@ -307,6 +307,37 @@ q.deleteUser = function (client,id,callback) {
 
 //=========v= BASKET ITEM ========================
 
+q.addBasketItem = function (client,details,callback) {
+    var queryString = `select id, item, quantity from BASKET_ITEM WHERE user_account = ${details.user_account_id} and item = ${details.item};`;
+    var query = client.query(queryString);
+    var results = [];
+
+    // Handle error
+    query.on('error', (error) => {
+        return callback(error,null);
+    });
+
+    // Stream results back a row at a time
+    query.on('row', (row) => {
+        results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+        console.log(results);
+        if (results.length==0){
+            q.createBasketItem(client,details,callback);
+        }
+        else{
+            console.log(results[0].quantity)
+            details.quantity += results[0].quantity;
+            console.log(details.quantity);
+            console.log(details);
+            q.updateBasketItem(client,details,callback);
+        }
+    });
+}
+
 q.createBasketItem = function (client,details,callback) {
     var queryString = `INSERT INTO basket_item (user_account, item, quantity) VALUES (${details.user_account_id},${details.item},${details.quantity}) `;
     queryString = queryString + `RETURNING id, item, quantity, user_account;`;
@@ -391,6 +422,7 @@ q.getBasketItems = function (client, id, callback) {
 };
 
 q.updateBasketItem = function (client,details,callback) {
+    console.log(details);
     var queryString = `UPDATE basket_item set quantity = ${details.quantity} where id = ${details.item} and user_account = ${details.user_account_id} `;
     queryString = queryString + `RETURNING id, item, quantity, user_account;`;
     
@@ -409,6 +441,7 @@ q.updateBasketItem = function (client,details,callback) {
 
     // After all data is returned, close connection and return results
     query.on('end', () => {
+        console.log(results);
         callback(null,results);
     });
 }
