@@ -6,12 +6,17 @@ $(document).ready(function(e) {
     // });
    $('#addtocart').submit(function(event) {
     event.preventDefault();
+    if (user){
     var raw = $(this).serializeArray();
     var quantity = parseInt(raw[0].value);
     var data = {item: itemId,
                 quantity: quantity };
        
     addToCartItem(data);
+}
+else{
+    alert ("Please Login to add items to your cart")
+}
 }); 
 
 });
