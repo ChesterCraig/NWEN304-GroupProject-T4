@@ -304,7 +304,6 @@ app.get('/items/:id', (request,response) => {
         if (error) {
             return response.status(400).send(error);
         } else if (request.accepts('html')) {
-            response.setHeader("Cache-Control","max-age=3600"); // CacheControl maybe?
             response.render('item_page',{title: "clothingShop",item: results[0]});
         } else if (request.accepts('application/json')) {
             response.json(results);
