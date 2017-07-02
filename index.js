@@ -186,6 +186,7 @@ app.get('/logout', function(req, res){
 //======== RENDERED HTML PAGES ================================
 // Home page.
 app.get('/', function(req, res, next) {
+  res.setHeader("Cache-Control","max-age=3600"); // CacheControl maybe?
   res.render('index', { title: 'Clothing Shop'});
 });
 
@@ -196,6 +197,7 @@ var item = { title: 'shop',
 
 //cart page
 app.get('/cart', function(req, res, next) {
+  res.setHeader("Cache-Control","max-age=3600"); // CacheControl maybe?
   res.render('cart',{ title: 'Cart - Clothing Shop'});
 });
 
@@ -205,6 +207,7 @@ app.get('/men', function(req, res, next) {
         if (error) {
             return response.status(400).send(error);
         }
+        res.setHeader("Cache-Control","max-age=3600"); // CacheControl maybe?
         res.render('men', {
             title: 'men - Clothing Shop',
             data: results
@@ -220,6 +223,7 @@ app.get('/women', function(req, res, next) {
         if (error) {
             return response.status(400).send(error);
         }
+        res.setHeader("Cache-Control","max-age=3600"); // CacheControl maybe?
         res.render('women', {
             title: 'women - Clothing Shop',
             data: results
@@ -243,7 +247,7 @@ app.post('/itemsearch', function(req, res) {
     });
 });
 
-// Example womens page
+// Example womens page 
 app.get('/accessories', function(req, res, next) {
     res.render('accessories',{title: 'accessories - Clothing Shop'});
 });
@@ -300,6 +304,7 @@ app.get('/items/:id', (request,response) => {
         if (error) {
             return response.status(400).send(error);
         } else if (request.accepts('html')) {
+            response.setHeader("Cache-Control","max-age=3600"); // CacheControl maybe?
             response.render('item_page',{title: "clothingShop",item: results[0]});
         } else if (request.accepts('application/json')) {
             response.json(results);
