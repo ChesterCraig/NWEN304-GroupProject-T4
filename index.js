@@ -43,7 +43,10 @@ if (process.env.FB_CLIENT_ID && process.env.FB_CLIENT_SECRET) {
 // Authentication stuff
 app.use(session({secret: 'keyboard cat',
                  resave: true,
-                 saveUninitialized: true }));
+                 saveUninitialized: true,
+                 cookie :{maxAge: 60000*5}, // logout after 5 min inactivity
+                 rolling: true
+                }));
 
 app.use(passport.initialize());
 app.use(passport.session());
