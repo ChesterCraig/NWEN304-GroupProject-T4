@@ -40,10 +40,31 @@ Otherwise these values are pulled from our heroku application environment variab
 
 
 --REST interface design--
-GET /items      Gets all items in array of item objects
-POST /items     [DISABLED] With details in JSON body, can create a new item in the items schema. This is disabled as we dont want just anybody adding items to our shop.
---NEED TO FILL IN REMAINING--
+GET /items          Gets all items in array of item objects
+POST /items         [DISABLED] With details in JSON body, can create a new item in the items schema. This is disabled as we dont want just anybody adding items to our shop.
+GET /items/:id      Gets item details json / renders html page if request header accepts html.
+DELETE /items/:id   [DISABLED] removes item. disabled as we dont want just anybody deleting items 
+GET /allbasketitems [ADMIN] Gets Array of all items in every basket
+GET /basketitems    Gets all items in a users basket
+POST /basketitem    Add item to my users basket
+PUT /basketitem     used to update quantity of a basket item
+DELETE /basket/:id  Deletes an item in users basket 
+DELETE /basket      [ADMIN] deletes all basket item from any user
+POST /user          add new user account (email & password)
+GET /users/:id      Get user ...
+DELETE /users/:id   Delete user ...
+GET /users get list of all users
 
+--OTHER?--
+GET /auth/facebook  Redirect the user to Facebook for authentication
+POST /login         login via email password
+GET /logout         logout user redirect to home
+GET /               render homepage html
+GET /cart           [LOGGEDIN]  render users cart page
+GET /men            render men catagory of items
+GET /women          render women catagory of items
+POST /itemsearch    search for item
+GET /user           get current user details
 
 --Error handling--
 Client side error handling is limited, as most actions are a result of the requests/response to the server and server side failures should be represented as a 4xx/5xx http code response.
