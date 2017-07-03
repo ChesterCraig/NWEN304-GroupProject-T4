@@ -290,15 +290,15 @@ app.get('/items', (request,response) => {
     });
 });
 
-// Create Item
-app.post('/items', (request,response) => {
-    query.createItem(client, request.body.item,(error,results) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.json(results);
-    });
-});
+// // Create Item           // DISABLED AS WE DONT WANT ANYBODY ADDING ITEMS TO OUR STORE
+// app.post('/items', (request,response) => {
+//     query.createItem(client, request.body.item,(error,results) => {
+//         if (error) {
+//             return response.status(400).send(error);
+//         }
+//         response.json(results);
+//     });
+// });
 
 // Get specific item 
 // returns html or json depending on request accept header 
@@ -317,15 +317,15 @@ app.get('/items/:id', (request,response) => {
     });
 });
 
-// Delete item
-app.delete('/items/:id', function(request, response){
-    query.deleteItem(client,request.params.id,(error) => {
-        if (error) {
-            return response.status(400).send(error);
-        }
-        response.status(200).send(); 
-    });
-});
+// // Delete item            // DISABLED AS WE DONT WANT ANYBODY DELETING ITEMS FROM OUR STORE     
+// app.delete('/items/:id', function(request, response){
+//     query.deleteItem(client,request.params.id,(error) => {
+//         if (error) {
+//             return response.status(400).send(error);
+//         }
+//         response.status(200).send(); 
+//     });
+// });
 
 
 //-------- BASKET ITEMS -----------
