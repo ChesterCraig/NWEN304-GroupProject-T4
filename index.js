@@ -19,7 +19,10 @@ var app = express();
 
 
   app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https'){
+    if(req.header('host')=="localhost:8080"){
+        next();
+    }
+    else if (req.header('x-forwarded-proto') !== 'https'){
       res.redirect(`https://${req.header('host')}${req.url}`);}
     else {
       next();}
